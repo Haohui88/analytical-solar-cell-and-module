@@ -362,8 +362,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
@@ -416,8 +416,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
 J=probe[[2]];
@@ -477,8 +477,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
@@ -532,8 +532,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
 If[probe[[2]]<=Jsc,
@@ -592,8 +592,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
@@ -648,8 +648,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
 If[probe[[2]]<=Jsc,
@@ -771,8 +771,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
@@ -825,8 +825,8 @@ qeInterp=Interpolation[QE,InterpolationOrder->1];
 Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
-voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3]&;
-current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3]&;
+voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
+current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
 J=probe[[2]];
@@ -904,7 +904,7 @@ Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-Option
 voltage=FindRoot[
 (#==-Jsc*(A-B*Exp[-m])-
 (\[Alpha]f*sJf0+\[Alpha]b*sJb0)*(Exp[(q*v)/(k*T)]-1))/.v->t,
-{t,0.9},PrecisionGoal->3]&;
+{t,0.9},PrecisionGoal->3,AccuracyGoal->3]&;
 current[x_]:=(-Jsc*(A-B*Exp[-m])-
 (\[Alpha]f*sJf0+\[Alpha]b*sJb0)*(Exp[(q*v)/(k*T)]-1))/.v->x;
 
@@ -971,7 +971,7 @@ Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-Option
 voltage=FindRoot[
 (#==-Jsc*(A-B*Exp[-m])-
 (\[Alpha]f*sJf0+\[Alpha]b*sJb0)*(Exp[(q*v)/(k*T)]-1))/.v->t,
-{t,0.9},PrecisionGoal->3]&;
+{t,0.9},PrecisionGoal->3,AccuracyGoal->3]&;
 current[x_]:=(-Jsc*(A-B*Exp[-m])-
 (\[Alpha]f*sJf0+\[Alpha]b*sJb0)*(Exp[(q*v)/(k*T)]-1))/.v->x;
 
