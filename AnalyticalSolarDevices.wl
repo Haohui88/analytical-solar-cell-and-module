@@ -8,7 +8,7 @@
 (*Solar Cell & Modules Library*)
 
 
-(* ::Chapter::Closed:: *)
+(* ::Chapter:: *)
 (*Initialization*)
 
 
@@ -29,7 +29,9 @@
 BeginPackage["AnalyticalSolarDevices`"];
 
 
+(* ::Section:: *)
 (*Elementary cell models*)
+
 
 If[ Not@ValueQ[SiCell::usage],
 SiCell::usage = "Elementary two diode Si cell model. \
@@ -66,7 +68,22 @@ PerovskiteCell[spec, T, probe] calculates the current and voltage at the given p
 
 Options[PerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_nip_Yang2017b"],DeviceQE->EQE["perovskite_Yang2017"],MetalCoverage->0,OutputCoupling->False};
 
+
+(* ::Section:: *)
+(*Single junction module models*)
+
+
+If[ Not@ValueQ[SiModule::usage],
+SiModule::usage = "Simple model for a c-Si module. \
+SiModule[spec, T] calculates the full IV curve under the given spectrum and temperature."]
+
+(* default is utility type 72 cell module with M2 156.75mm2 c-Si cell *)
+Options[SiModule]={SeriesCells->72,ParallelCells->1,ModuleArea->1.938,DeviceArea->0.0245,DeviceParameters-><|"J01"->2*10^-9,"J02"->1*10^-6,"Rs"->0.006*0.0245,"Rsh"->8*0.0245|>,DeviceQE->EQE["PERC"],MetalCoverage->0.03};
+
+
+(* ::Section::Closed:: *)
 (*Tandem cell/module models*)
+
 
 If[ Not@ValueQ[TwoTer$GaAsSi::usage],
 TwoTer$GaAsSi::usage = "Tandem two-terminal GaAs on Si model. \
@@ -326,7 +343,7 @@ h=6.626*10^-34;
 
 
 (* ::Section::Closed:: *)
-(*Si cell model*)
+(*Si cell*)
 
 
 (* ::Text:: *)
@@ -442,7 +459,7 @@ P=J*V;
 
 
 (* ::Section::Closed:: *)
-(*GaAs cell model*)
+(*GaAs cell*)
 
 
 (* ::Text:: *)
@@ -561,7 +578,7 @@ Return[{P,J,V}];];
 
 
 (* ::Section::Closed:: *)
-(*InGaP cell model*)
+(*InGaP cell*)
 
 
 InGaPCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2,\[Eta]$internal},
@@ -675,7 +692,7 @@ Return[{P,J,V}];];
 
 
 (* ::Section::Closed:: *)
-(*CdTe cell model*)
+(*CdTe cell*)
 
 
 (* ::Text:: *)
@@ -732,7 +749,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 
 
 (* ::Section::Closed:: *)
-(*Perovskite cell model*)
+(*Perovskite cell*)
 
 
 (* ::Subsection::Closed:: *)
@@ -997,6 +1014,39 @@ If[OptionValue[OutputCoupling],
 Return[{P,J,V,If[V>=0,(sJf0+sJb0)/cellArea*Exp[(q*Min[V,t/.(voltage@0)])/(k*T)-1],0]}];
 ,
 Return[{P,J,V}];]
+
+];
+
+
+(* ::Section::Closed:: *)
+(*Si Module*)
+
+
+(* ::Text:: *)
+(*Assumes exactly identical cells. *)
+
+
+SiModule[spec_,T_,opt:OptionsPattern[]]:=Module[{devicePar=OptionValue@DeviceParameters,deviceQE=OptionValue@DeviceQE,cellArea=OptionValue@DeviceArea,metalFraction=OptionValue@MetalCoverage,nSeries=OptionValue@SeriesCells,nPar=OptionValue@ParallelCells,cellIV,modIV,IVP,interp,maxJ,mpp,x,Isc,Voc,FF,\[Eta]},
+
+cellIV=First@SiCell[spec,T,DeviceParameters->devicePar,DeviceQE->deviceQE,DeviceArea->cellArea,MetalCoverage->metalFraction]; 
+
+modIV={First@#,Last@#*nPar}&/@({First@#*nSeries,Last@#}&/@cellIV);
+
+IVP=Append[#,Times@@#]&/@modIV;
+mpp=First[IVP~Extract~Position[#,Max@#]&@Part[IVP\[Transpose],3]];
+
+(*interp=Interpolation[Reverse/@modIV,InterpolationOrder\[Rule]1];
+maxJ=modIV[[-1,2]];
+mpp=NMaximize[{interp[x]*x,{0<=x<maxJ}},x,AccuracyGoal->5,PrecisionGoal->5];
+mpp={x/.#[[2,1]],interp[x/.#[[2,1]]],First@#}&@mpp;*)
+
+Isc=Interpolation[DeleteDuplicatesBy[modIV,First],InterpolationOrder->1][0];
+Voc=Interpolation[DeleteDuplicatesBy[Reverse/@modIV,First],InterpolationOrder->1][0];
+FF=Last@mpp/(Isc*Voc);
+\[Eta]=Last@mpp/(cellArea*nSeries*nPar)/1000;
+
+Return[{modIV,Isc,Voc,FF,\[Eta]}~Join~mpp]
+(*mpp is in the format of {Impp,Vmpp,Pmpp}*)
 
 ];
 
