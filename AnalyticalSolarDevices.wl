@@ -29,7 +29,7 @@
 BeginPackage["AnalyticalSolarDevices`"];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Elementary cell models*)
 
 
@@ -342,7 +342,7 @@ c=3*10^8;
 h=6.626*10^-34;
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Si cell*)
 
 
@@ -351,6 +351,7 @@ h=6.626*10^-34;
 (*Default QE and J0 values represent a typical PERC cell. *)
 (*QE can be EQE or IQE. If IQE is used, input spectrum should be corrected for reflectance and transmittance. *)
 (*All units are in SI. *)
+(*For Si, input spec can simply be the photo-generation current in SI unit since it is usually insensitive to spectral effects. *)
 
 
 SiCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2},
@@ -371,12 +372,16 @@ jscTc=0.0005; (* i.e. 0.05%/K, in proportion per K *)
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	wavelength=First/@spec;
+	wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
+	specInterp=Interpolation[spec,InterpolationOrder->1];
+	qeInterp=Interpolation[QE,InterpolationOrder->1];
+	\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
+	Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
@@ -384,7 +389,7 @@ current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
-V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
+V=Join[Range[1.1*Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
@@ -425,12 +430,16 @@ jscTc=0.0005; (* i.e. 0.05%/K, in proportion per K *)
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	wavelength=First/@spec;
+	wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
+	specInterp=Interpolation[spec,InterpolationOrder->1];
+	qeInterp=Interpolation[QE,InterpolationOrder->1];
+	\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
+	Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
@@ -499,7 +508,7 @@ current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
-V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
+V=Join[Range[1.1*Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
@@ -614,7 +623,7 @@ current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
-V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
+V=Join[Range[1.1*Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
@@ -748,7 +757,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Perovskite cell*)
 
 
@@ -793,7 +802,7 @@ current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
-V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
+V=Join[Range[1.1*Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
@@ -927,7 +936,7 @@ current[x_]:=(-Jsc*(A-B*Exp[-m])-
 
 Voc=t/.(voltage@0);
 step=Abs[Voc/5];
-V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
+V=Join[Range[1.1*Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,-1,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
@@ -1018,7 +1027,7 @@ Return[{P,J,V}];]
 ];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Si Module*)
 
 
@@ -1026,7 +1035,7 @@ Return[{P,J,V}];]
 (*Assumes exactly identical cells. *)
 
 
-SiModule[spec_,T_,opt:OptionsPattern[]]:=Module[{devicePar=OptionValue@DeviceParameters,deviceQE=OptionValue@DeviceQE,cellArea=OptionValue@DeviceArea,metalFraction=OptionValue@MetalCoverage,nSeries=OptionValue@SeriesCells,nPar=OptionValue@ParallelCells,cellIV,modIV,IVP,interp,maxJ,mpp,x,Isc,Voc,FF,\[Eta]},
+SiModule[spec_,T_,opt:OptionsPattern[]]:=Module[{devicePar=OptionValue@DeviceParameters,deviceQE=OptionValue@DeviceQE,cellArea=OptionValue@DeviceArea,moduleArea=OptionValue@ModuleArea,metalFraction=OptionValue@MetalCoverage,nSeries=OptionValue@SeriesCells,nPar=OptionValue@ParallelCells,cellIV,modIV,IVP,interp,maxJ,mpp,x,Isc,Voc,FF,\[Eta]cell,\[Eta]mod},
 
 cellIV=First@SiCell[spec,T,DeviceParameters->devicePar,DeviceQE->deviceQE,DeviceArea->cellArea,MetalCoverage->metalFraction]; 
 
@@ -1043,9 +1052,10 @@ mpp={x/.#[[2,1]],interp[x/.#[[2,1]]],First@#}&@mpp;*)
 Isc=Interpolation[DeleteDuplicatesBy[modIV,First],InterpolationOrder->1][0];
 Voc=Interpolation[DeleteDuplicatesBy[Reverse/@modIV,First],InterpolationOrder->1][0];
 FF=Last@mpp/(Isc*Voc);
-\[Eta]=Last@mpp/(cellArea*nSeries*nPar)/1000;
+\[Eta]cell=Last@mpp/(cellArea*nSeries*nPar)/1000;
+\[Eta]mod=Last@mpp/moduleArea;
 
-Return[{modIV,Isc,Voc,FF,\[Eta]}~Join~mpp]
+Return[{modIV,Isc,Voc,FF,\[Eta]cell,\[Eta]mod}~Join~mpp]
 (*mpp is in the format of {Impp,Vmpp,Pmpp}*)
 
 ];
