@@ -228,6 +228,14 @@ Options[AMatch$PerovskiteSi]={SubQE->{EQE["PS Werner2016_top"],EQE["PS Werner201
 
 
 
+(* ::Section:: *)
+(*Others*)
+
+
+If[ Not@ValueQ[TemperatureCoeff::usage],
+TemperatureCoeff::usage = "TemperatureCoeff[spec, device] determines the temperature coefficient of {Isc, Voc, Pmpp}, for a given device model under a certain spectrum."]
+
+
 (* ::Chapter::Closed:: *)
 (*Parameters Library*)
 
@@ -329,11 +337,16 @@ EQE["GS_sample_bot"]={{280,0.},{300,0.},{310,0.},{320,0.},{330,0.},{340,0.},{350
 (*Main definitions*)
 
 
+(* ::Text:: *)
+(*Overall convention: *)
+(*Device model full output will be in the format of {IV curve, Isc, Voc, FF, Pmpp, Impp, Vmpp, ...}. *)
+
+
 Begin["`Private`"];
 
 
 (* ::Section::Closed:: *)
-(*Constants*)
+(*Constants and auxiliary functions*)
 
 
 q=1.6*10^-19;
@@ -342,7 +355,28 @@ c=3*10^8;
 h=6.626*10^-34;
 
 
-(* ::Section:: *)
+TemperatureCoeff[spec_,device_,opt:OptionsPattern[]]:=Module[{Tprobe,outputs,effList,fit,x,sTC={}},
+
+Tprobe=Range[-10,80,5]+273.15;
+outputs=device[spec,#,opt]&/@Tprobe;
+
+(* Tc for short circuit current *)
+fit=Fit[Transpose[{Tprobe,outputs[[All,2]]}],{1,x},x];
+AppendTo[sTC,fit[[2,1]]/outputs[[8,2]]];
+
+(* Tc for open circuit voltage *)
+fit=Fit[Transpose[{Tprobe,outputs[[All,3]]}],{1,x},x];
+AppendTo[sTC,fit[[2,1]]/outputs[[8,3]]];
+
+(* Tc for MPP power *)
+fit=Fit[Transpose[{Tprobe,outputs[[All,5]]}],{1,x},x];
+AppendTo[sTC,fit[[2,1]]/outputs[[8,5]]];
+
+Return@sTC
+];
+
+
+(* ::Section::Closed:: *)
 (*Si cell*)
 
 
@@ -350,7 +384,7 @@ h=6.626*10^-34;
 (*A simple two diode model for a Si solar cell, taking into account temperature effects. *)
 (*Default QE and J0 values represent a typical PERC cell. *)
 (*QE can be EQE or IQE. If IQE is used, input spectrum should be corrected for reflectance and transmittance. *)
-(*All units are in SI. *)
+(*All units are in SI except for spectrum, which is usually in units nm for wavelength and W/m^2/nm for spectral irradiance. *)
 (*For Si, input spec can simply be the photo-generation current in SI unit since it is usually insensitive to spectral effects. *)
 
 
@@ -1027,7 +1061,7 @@ Return[{P,J,V}];]
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Si Module*)
 
 
@@ -1049,19 +1083,19 @@ maxJ=modIV[[-1,2]];
 mpp=NMaximize[{interp[x]*x,{0<=x<maxJ}},x,AccuracyGoal->5,PrecisionGoal->5];
 mpp={x/.#[[2,1]],interp[x/.#[[2,1]]],First@#}&@mpp;*)
 
-Isc=Interpolation[DeleteDuplicatesBy[modIV,First],InterpolationOrder->1][0];
-Voc=Interpolation[DeleteDuplicatesBy[Reverse/@modIV,First],InterpolationOrder->1][0];
+Isc=Interpolation[DeleteDuplicatesBy[Round[modIV,0.0001],First],InterpolationOrder->1][0];
+Voc=Interpolation[DeleteDuplicatesBy[Round[Reverse/@modIV,0.0001],First],InterpolationOrder->1][0];
 FF=Last@mpp/(Isc*Voc);
 \[Eta]cell=Last@mpp/(cellArea*nSeries*nPar)/1000;
 \[Eta]mod=Last@mpp/moduleArea;
 
-Return[{modIV,Isc,Voc,FF,\[Eta]cell,\[Eta]mod}~Join~mpp]
-(*mpp is in the format of {Impp,Vmpp,Pmpp}*)
+Return[{modIV,Isc,Voc,FF}~Join~RotateRight@mpp~Join~{\[Eta]cell,\[Eta]mod}]
+(*mpp is originally in the format of {Impp,Vmpp,Pmpp}*)
 
 ];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*2T current matched tandem modules*)
 
 
