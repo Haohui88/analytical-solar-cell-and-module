@@ -18,7 +18,7 @@
 
 (* :Author: Dr. Liu Haohui *)
 
-(* :Package Version: 1.0 *)
+(* :Package Version: 2020-08 *)
 
 (* :Mathematica Version: 12.0 *)
 
@@ -69,7 +69,7 @@ PerovskiteCell[spec, T, probe] calculates the current and voltage at the given p
 Options[PerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_nip_Yang2017b"],DeviceQE->EQE["perovskite_Yang2017"],MetalCoverage->0,OutputCoupling->False};
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Single junction module models*)
 
 
@@ -84,6 +84,20 @@ Options[SiModule]={SeriesCells->72,ParallelCells->1,ModuleArea->1.938,DeviceArea
 (* ::Section::Closed:: *)
 (*Tandem cell/module models*)
 
+
+(* ::Text:: *)
+(*Currently tandem models do not support changing of individual cell properties like device area. *)
+
+
+(* --------------- two terminal -------------- *)
+
+If[ Not@ValueQ[TwoTer2J::usage],
+TwoTer2J::usage = "Tandem two-terminal model. \
+TwoTer2J[spec, T] calculates the full IV curve under the given spectrum and temperature. \
+TwoTer2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. \
+Default options: {MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE[\"sample GS2T_top\"],EQE[\"sample GS2T_bot\"]},SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.51}"]
+
+Options[TwoTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["sample GS2T_top"],EQE["sample GS2T_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51};
 
 If[ Not@ValueQ[TwoTer$GaAsSi::usage],
 TwoTer$GaAsSi::usage = "Tandem two-terminal GaAs on Si model. \
@@ -104,7 +118,7 @@ TwoTer$InGapGaAsSi::usage = "Tandem two-terminal InGaP/GaAs on Si model. \
 TwoTer$InGapGaAsSi[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 TwoTer$InGapGaAsSi[spec, T, \"mpp\"] calculates the current and voltage at the MPP point."]
 
-Options[TwoTer$InGapGaAsSi]={SubQE->{EQE["InGS Cariou2016_top"],EQE["InGS Cariou2016_mid"],EQE["InGS Cariou2016_bot"]},CouplingEfficiency->{0.5,0.5}};
+Options[TwoTer$InGapGaAsSi]={SubQE->{EQE["InGS Cariou2016_top"],EQE["InGS Cariou2016_mid"],EQE["InGS Cariou2016_bot"]},SubCells->{parameters["Sample InGaP"],parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->{0.5,0.5}};
 
 If[ Not@ValueQ[TwoTer$2DiodePerovskiteSi::usage],
 TwoTer$2DiodePerovskiteSi::usage = "Tandem two-terminal perovskite on Si model (perovskite top cell is two-diode model). \
@@ -120,17 +134,26 @@ TwoTer$PerovskiteSi[spec, T, \"mpp\"] calculates the current and voltage at the 
 
 Options[TwoTer$PerovskiteSi]={SubQE->{EQE["PS Sahli2018_top"],EQE["PS Sahli2018_bot"]},SubCells->{parameters["perovskite_nip_Yang2017b"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0};
 
+If[ Not@ValueQ[FourTer2J::usage],
+FourTer2J::usage = "Tandem dual junction four-terminal model. \
+FourTer2J[spec, T] calculates the full IV curve under the given spectrum and temperature. Default options: {MaterialSystem\[Rule]{GaAsCell,SiCell},SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]}, \
+SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.51}"]
+
+(* --------------- four terminal -------------- *)
+
+Options[FourTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51};
+
 If[ Not@ValueQ[FourTer$GaAsSi::usage],
 FourTer$GaAsSi::usage = "Tandem four-terminal GaAs on Si model. \
 FourTer$GaAsSi[spec, T] calculates the full IV curve under the given spectrum and temperature."]
 
-Options[FourTer$GaAsSi]={SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},CouplingEfficiency->0.51};
+Options[FourTer$GaAsSi]={SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51};
 
 If[ Not@ValueQ[FourTer$InGaPSi::usage],
 FourTer$InGaPSi::usage = "Tandem four-terminal InGaP on Si model. \
 FourTer$InGaPSi[spec, T] calculates the full IV curve under the given spectrum and temperature."]
 
-Options[FourTer$InGaPSi]={SubQE->{EQE["InS_Essig2017_top"],EQE["InS_Essig2017_bot"]},CouplingEfficiency->0.5};
+Options[FourTer$InGaPSi]={SubQE->{EQE["InS_Essig2017_top"],EQE["InS_Essig2017_bot"]},SubCells->{parameters["Sample InGaP"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5};
 
 If[ Not@ValueQ[FourTer$2DiodePerovskiteSi::usage],
 FourTer$2DiodePerovskiteSi::usage = "Tandem four-terminal perovskite on Si model (perovskite top cell is two-diode model). \
@@ -144,19 +167,29 @@ FourTer$PerovskiteSi[spec, T] calculates the full IV curve under the given spect
 
 Options[FourTer$PerovskiteSi]={SubQE->{EQE["PS Werner2016_top"],EQE["PS Werner2016_bot"]},SubCells->{parameters["perovskite_nip_Yang2017b"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0};
 
+(* --------------- Mechanical Voltage Match -------------- *)
+
+If[ Not@ValueQ[VMatch2J::usage],
+VMatch2J::usage = "Tandem (mechanically) voltage matched model. \
+VMatch2J[spec, T] calculates the full IV curve under the given spectrum and temperature. \
+VMatch2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. Default options: {MaterialSystem\[Rule]{GaAsCell,SiCell},\
+SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]},SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,StringNumber->{10,17}}"]
+
+Options[VMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{10,17}};
+
 If[ Not@ValueQ[VMatch$GaAsSi::usage],
 VMatch$GaAsSi::usage = "Tandem (mechanically) voltage matched GaAs on Si model. \
 VMatch$GaAsSi[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 VMatch$GaAsSi[spec, T, \"mpp\"] calculates the current and voltage at the MPP point."]
 
-Options[VMatch$GaAsSi]={SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},CouplingEfficiency->0.5,StringNumber->{10,17}};
+Options[VMatch$GaAsSi]={SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{10,17}};
 
 If[ Not@ValueQ[VMatch$InGaPSi::usage],
 VMatch$InGaPSi::usage = "Tandem (mechanically) voltage matched InGaP on Si model. \
 VMatch$InGaPSi[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 VMatch$InGaPSi[spec, T, \"mpp\"] calculates the current and voltage at the MPP point."]
 
-Options[VMatch$InGaPSi]={SubQE->{EQE["InS_Essig2017_top"],EQE["InS_Essig2017_bot"]},CouplingEfficiency->0.5,StringNumber->{10,21}};
+Options[VMatch$InGaPSi]={SubQE->{EQE["InS_Essig2017_top"],EQE["InS_Essig2017_bot"]},SubCells->{parameters["Sample InGaP"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{10,21}};
 
 If[ Not@ValueQ[VMatch$2DiodePerovskiteSi::usage],
 VMatch$2DiodePerovskiteSi::usage = "Tandem (mechanically) voltage matched perovskite on Si model (perovskite top cell is two-diode model). \
@@ -171,6 +204,16 @@ VMatch$PerovskiteSi[spec, T] calculates the full IV curve under the given spectr
 VMatch$PerovskiteSi[spec, T, \"mpp\"] calculates the current and voltage at the MPP point."]
 
 Options[VMatch$PerovskiteSi]={SubQE->{EQE["PS Werner2016_top"],EQE["PS Werner2016_bot"]},SubCells->{parameters["perovskite_nip_Yang2017b"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0,StringNumber->{2,3}};
+
+(* --------------- three terminal -------------- *)
+
+If[ Not@ValueQ[ThreeTer2J::usage],
+ThreeTer2J::usage = "Tandem three-terminal model. \
+ThreeTer2J[spec, T] calculates the full IV curve under the given spectrum and temperature. \
+ThreeTer2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. Default options: {MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]},\
+SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,StringNumber->{1,2}}"]
+
+Options[ThreeTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{1,2}};
 
 If[ Not@ValueQ[ThreeTer$GaAsSi::usage],
 ThreeTer$GaAsSi::usage = "Tandem three-terminal GaAs on Si model. \
@@ -200,6 +243,15 @@ ThreeTer$PerovskiteSi[spec, T, \"mpp\"] calculates the current and voltage at th
 
 Options[ThreeTer$PerovskiteSi]={SubQE->{EQE["PS Werner2016_top"],EQE["PS Werner2016_bot"]},SubCells->{parameters["perovskite_nip_Yang2017b"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0,StringNumber->{1,2}};
 
+(* --------------- areal matched -------------- *)
+
+If[ Not@ValueQ[AMatch2J::usage],
+AMatch2J::usage = "Tandem areal matched model. \
+AMatch2J[spec, T] calculates the full IV curve under the given spectrum and temperature. Default options: {SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"],EQE[\"Kaneka_HJ-IBC\"]},\
+SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,AreaRatio->0.7}"]
+
+Options[AMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"],EQE["Kaneka_HJ-IBC"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,AreaRatio->0.7};
+
 If[ Not@ValueQ[AMatch$GaAsSi::usage],
 AMatch$GaAsSi::usage = "Tandem areal matched GaAs on Si model. \
 AMatch$GaAsSi[spec, T] calculates the full IV curve under the given spectrum and temperature."]
@@ -210,7 +262,7 @@ If[ Not@ValueQ[AMatch$InGaPSi::usage],
 AMatch$InGaPSi::usage = "Tandem areal matched InGaP on Si model. \
 AMatch$InGaPSi[spec, T] calculates the full IV curve under the given spectrum and temperature."]
 
-Options[AMatch$InGaPSi]={SubQE->{EQE["sample InS2T_top"],EQE["sample InS2T_bot"]},CouplingEfficiency->0.5,AreaRatio->1};
+Options[AMatch$InGaPSi]={SubQE->{EQE["sample InS2T_top"],EQE["sample InS2T_bot"]},SubCells->{parameters["Sample InGaP"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,AreaRatio->1};
 
 If[ Not@ValueQ[AMatch$2DiodePerovskiteSi::usage],
 AMatch$2DiodePerovskiteSi::usage = "Tandem areal matched perovskite on Si model (perovskite top cell is two-diode model). \
@@ -227,13 +279,15 @@ AMatch$PerovskiteSi[spec, T, \"mpp\"] calculates the current and voltage at the 
 Options[AMatch$PerovskiteSi]={SubQE->{EQE["PS Werner2016_top"],EQE["PS Werner2016_bot"],EQE["Kaneka_HJ-IBC"]},SubCells->{parameters["perovskite_nip_Yang2017b"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0,AreaRatio->0.95};
 
 
-
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Others*)
 
 
 If[ Not@ValueQ[TemperatureCoeff::usage],
 TemperatureCoeff::usage = "TemperatureCoeff[spec, device] determines the temperature coefficient of {Isc, Voc, Pmpp}, for a given device model under a certain spectrum."]
+
+If[ Not@ValueQ[CalcJsc::usage],
+CalcJsc::usage = "CalcJsc[spec_,QE_,cellArea_:1.,metalCoverage_:0.] calculate raw Jsc without temperature correction or luminescent coupling."]
 
 
 (* ::Chapter::Closed:: *)
@@ -376,6 +430,22 @@ Return@sTC
 ];
 
 
+(* ::Text:: *)
+(*Calculate raw Jsc without temperature correction or luminescent coupling: *)
+
+
+CalcJsc[spec_,QE_,cellArea_:1.,metalCoverage_:0.]:=Module[{wavelength,wRange,specInterp,qeInterp,\[Phi]\[Lambda]},
+	wavelength=First/@spec;
+	wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
+	specInterp=Interpolation[spec,InterpolationOrder->1];
+	qeInterp=Interpolation[QE,InterpolationOrder->1];
+	\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
+	
+	(* return Jsc in A/m2 *)
+	Return[Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-metalCoverage)];
+];
+
+
 (* ::Section::Closed:: *)
 (*Si cell*)
 
@@ -385,10 +455,10 @@ Return@sTC
 (*Default QE and J0 values represent a typical PERC cell. *)
 (*QE can be EQE or IQE. If IQE is used, input spectrum should be corrected for reflectance and transmittance. *)
 (*All units are in SI except for spectrum, which is usually in units nm for wavelength and W/m^2/nm for spectral irradiance. *)
-(*For Si, input spec can simply be the photo-generation current in SI unit since it is usually insensitive to spectral effects. *)
+(*Input spec can simply be the photo-generation current in SI unit. Often it is more convenient to specify photogeneration current instead of worrying about spectrum, since Si cell is usually insensitive to spectral effects. Note that this current should not be temperature corrected (correction will be done internally). *)
 
 
-SiCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2},
+SiCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,n1,n2},
 Tstc=273.15+25;
 Eg[0]=1.1557*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-7.021*10^-4*q*Tstc^2/(Tstc+1108);
@@ -409,12 +479,7 @@ n2=2; (* ideality factor 2 *)
 If[NumericQ@spec,
 	Jsc=spec;
 ,
-	wavelength=First/@spec;
-	wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-	specInterp=Interpolation[spec,InterpolationOrder->1];
-	qeInterp=Interpolation[QE,InterpolationOrder->1];
-	\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-	Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
@@ -467,12 +532,7 @@ n2=2; (* ideality factor 2 *)
 If[NumericQ@spec,
 	Jsc=spec;
 ,
-	wavelength=First/@spec;
-	wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-	specInterp=Interpolation[spec,InterpolationOrder->1];
-	qeInterp=Interpolation[QE,InterpolationOrder->1];
-	\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-	Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage]; 
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
@@ -480,20 +540,20 @@ voltage=FindRoot[#==Jsc-J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))
 current=FindRoot[t==Jsc-J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
-J=probe[[2]];
-If[probe[[2]]<= Jsc,
-V=t/.(voltage@J);,
-V=-t/.(voltage@0);
-J=t/.(current@V);
-V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
-J=t/.(current@V);
-];
-P=J*V;,
-
-"V",
-V=probe[[2]];
-J=t/.(current@V);
-P=J*V;
+	J=probe[[2]];
+	If[probe[[2]]<= Jsc,
+		V=t/.(voltage@J);
+		,
+		V=-t/.(voltage@0);
+		J=t/.(current@V);
+		V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
+		J=t/.(current@V);
+	];
+	P=J*V;
+,"V",
+	V=probe[[2]];
+	J=t/.(current@V);
+	P=J*V;
 ];
 
 {P,J,V}
@@ -510,7 +570,7 @@ P=J*V;
 (*Default QE and J0 values represent a state of the art Alta ELO GaAs cell. *)
 
 
-GaAsCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,Jmpp,Vmpp,V,J,P,vmax,step,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2,\[Eta]$internal},
+GaAsCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,Jmpp,Vmpp,V,J,P,vmax,step,Jsc,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
 Tstc=273.15+25;
 Eg[0]=1.5216*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-8.871*10^-4*q*Tstc^2/(Tstc+572);
@@ -529,12 +589,11 @@ jscTc=0.0008; (* in proportion per K *)
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage]; 
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
@@ -565,7 +624,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-GaAsCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,wRange,voltage,V,J,Jsc,t,specInterp,qeInterp,n1,n2,\[Eta]$internal,P,current},
+GaAsCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc,t,n1,n2,\[Eta]$internal,P,current},
 Tstc=273.15+25;
 Eg[0]=1.5216*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-8.871*10^-4*q*Tstc^2/(Tstc+572);
@@ -584,31 +643,30 @@ jscTc=0.0008; (* i.e. 0.05%/K, in proportion per K, same for below *)
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage]; 
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
 current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
-If[probe[[2]]<=Jsc,
-J=probe[[2]];
-V=t/.(voltage@J);,
-V=-t/.(voltage@0);
-J=t/.(current@V);
-V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
-J=t/.(current@V);
-];
-P=J*V;,
-"V",
-V=probe[[2]];
-J=t/.(current@V);
-P=J*V;
+	If[probe[[2]]<=Jsc,
+		J=probe[[2]];
+		V=t/.(voltage@J);,
+		V=-t/.(voltage@0);
+		J=t/.(current@V);
+		V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
+		J=t/.(current@V);
+	];
+	P=J*V;
+,"V",
+	V=probe[[2]];
+	J=t/.(current@V);
+	P=J*V;
 ];
 
 (* output light emission in terms of current density in unit DeviceArea, simplified from ref: Geisz 2015 *)
@@ -624,7 +682,7 @@ Return[{P,J,V}];];
 (*InGaP cell*)
 
 
-InGaPCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2,\[Eta]$internal},
+InGaPCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
 Tstc=273.15+25;
 (* Ref for T dependence of Eg: Hooft et al., 1992 *)
 Eg[0]=1.937*q; 
@@ -644,12 +702,11 @@ jscTc=0.0008; (* taken to be the same as GaAs, but could be 0.07%/K according to
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage]; 
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
@@ -680,7 +737,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-InGaPCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,wRange,voltage,V,J,Jsc,t,specInterp,qeInterp,n1,n2,\[Eta]$internal,P,current},
+InGaPCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc,t,n1,n2,\[Eta]$internal,P,current},
 Tstc=273.15+25;
 (* Ref for T dependence of Eg: Hooft et al., 1992 *)
 Eg[0]=1.937*q; 
@@ -700,31 +757,31 @@ jscTc=0.0008;
 n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage]; 
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
-If[probe[[2]]<=Jsc,
-J=probe[[2]];
-V=t/.(voltage@J);,
-V=-t/.(voltage@0);
-J=t/.(current@V);
-V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
-J=t/.(current@V);
-];
-P=J*V;,
-"V",
-V=probe[[2]];
-J=t/.(current@V);
-P=J*V;
+	If[probe[[2]]<=Jsc,
+	J=probe[[2]];
+	V=t/.(voltage@J);
+	,
+	V=-t/.(voltage@0);
+	J=t/.(current@V);
+	V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
+	J=t/.(current@V);
+	];
+	P=J*V;
+,"V",
+	V=probe[[2]];
+	J=t/.(current@V);
+	P=J*V;
 ];
 
 If[OptionValue[OutputCoupling],
@@ -791,7 +848,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Perovskite cell*)
 
 
@@ -805,7 +862,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 (*Bandgap temperature dependence based on measured blue shift in ref: Foley et al., 2015 and Milot et al., 2015. *)
 
 
-TwoDiodePerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,specInterp,qeInterp,n1,n2,\[Eta]$internal},
+TwoDiodePerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
 Tstc=273.15+25;
 Eg[Tstc]=1.55*q;
 Eg[T]=Eg[Tstc]+(T-Tstc)*0.00045*q;
@@ -823,12 +880,11 @@ n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 \[Eta]$internal=0; (* internal recycling efficiency, depends on optics from cell structure *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
@@ -859,7 +915,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-TwoDiodePerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,V,J,Jsc,t,specInterp,qeInterp,n1,n2,\[Eta]$internal,P,current},
+TwoDiodePerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,V,J,Jsc,t,n1,n2,\[Eta]$internal,P,current},
 Tstc=273.15+25;
 Eg[Tstc]=1.55*q;
 Eg[T]=Eg[Tstc]+(T-Tstc)*0.00045*q;
@@ -877,32 +933,31 @@ n1=1; (* ideality factor 1 *)
 n2=2; (* ideality factor 2 *)
 \[Eta]$internal=0; (* internal recycling efficiency, depends on optics from cell structure *)
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];
+];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[#==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(t+#*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(t+#*Rs))/(n2*k*T)]-1)-(t+#*Rs)/Rsh,{t,(k*T)/q Log[(Jsc-#)/J01+1]},PrecisionGoal->3,AccuracyGoal->3]&;
 current=FindRoot[t==Jsc-(1-\[Eta]$internal)*J01*(Exp[(q*(#+t*Rs))/(n1*k*T)]-1)-J02*(Exp[(q*(#+t*Rs))/(n2*k*T)]-1)-(#+t*Rs)/Rsh,{t,Jsc-J01*(Exp[(q*#)/(k*T)]-1)},PrecisionGoal->3,AccuracyGoal->3]&;
 
 Switch[probe[[1]],"J",
-J=probe[[2]];
-If[probe[[2]]<= Jsc,
-V=t/.(voltage@J);,
-V=-t/.(voltage@0);
-J=t/.(current@V);
-V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
-J=t/.(current@V);
-];
-P=J*V;,
-
-"V",
-V=probe[[2]];
-J=t/.(current@V);
-P=J*V;
+	J=probe[[2]];
+	If[probe[[2]]<= Jsc,
+		V=t/.(voltage@J);
+	,
+		V=-t/.(voltage@0);
+		J=t/.(current@V);
+		V=(V-0)*(probe[[2]]-Jsc)/(J-Jsc);
+		J=t/.(current@V);
+	];
+	P=J*V;
+,"V",
+	V=probe[[2]];
+	J=t/.(current@V);
+	P=J*V;
 ];
 
 (* output light emission in terms of current density in unit DeviceArea, simplified from ref: Geisz 2015 *)
@@ -926,7 +981,7 @@ Return[{P,J,V}];];
 (*internal photon recycling and output coupling model not verified. *)
 
 
-PerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,V,J,P,vmax,Jsc,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF,specInterp,qeInterp},
+PerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF},
 
 (* main model specific definitions *)
 Tstc=273.15+25;
@@ -953,12 +1008,11 @@ B=\[Alpha]b*((1-Exp[v$prime+m])/(v$prime+m)-\[Beta]b);
 sJf0=cellParameterList["Jf0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 sJb0=cellParameterList["Jb0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];
+];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[
@@ -994,7 +1048,7 @@ FF=Pmpp/(Jsc2*Voc);
 ];
 
 
-PerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,current,step,V,J,P,vmax,Jsc,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF,specInterp,qeInterp},
+PerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF},
 
 (* main model specific definitions *)
 Tstc=273.15+25;
@@ -1020,12 +1074,11 @@ B=\[Alpha]b*((1-Exp[v$prime+m])/(v$prime+m)-\[Beta]b);
 sJf0=cellParameterList["Jf0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 sJb0=cellParameterList["Jb0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 
-wavelength=First/@spec;
-wRange=Range[First[wavelength],Last[wavelength]]; (* in step of 1 nm *)
-specInterp=Interpolation[spec,InterpolationOrder->1];
-qeInterp=Interpolation[QE,InterpolationOrder->1];
-\[Phi]\[Lambda]=(specInterp[wRange]*wRange)/(h*c)*10^-9;
-Jsc=Total[q*qeInterp[wRange]*0.01*\[Phi]\[Lambda]]*cellArea*(1-OptionValue@MetalCoverage); (* in A/m2 *)
+If[NumericQ@spec,
+	Jsc=spec;
+,
+	Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];
+];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
 
 voltage=FindRoot[
@@ -1037,20 +1090,20 @@ current[x_]:=(-Jsc*(A-B*Exp[-m])-
 
 Jsc2=current[0];
 Switch[probe[[1]],"J",
-J=probe[[2]];
-If[probe[[2]]<= Jsc2,
-V=t/.(voltage@J);,
-V=-t/.(voltage@0);
-J=current[V];
-V=(V-0)*(probe[[2]]-Jsc2)/(J-Jsc2);
-J=current[V];
-];
-P=J*V;,
-
-"V",
-V=probe[[2]];
-J=current[V];
-P=J*V;
+	J=probe[[2]];
+	If[probe[[2]]<= Jsc2,
+		V=t/.(voltage@J);
+		,
+		V=-t/.(voltage@0);
+		J=current[V];
+		V=(V-0)*(probe[[2]]-Jsc2)/(J-Jsc2);
+		J=current[V];
+	];
+	P=J*V;
+,"V",
+	V=probe[[2]];
+	J=current[V];
+	P=J*V;
 ];
 
 If[OptionValue[OutputCoupling],
@@ -1100,28 +1153,38 @@ Return[{modIV,Isc,Voc,FF}~Join~RotateRight@mpp~Join~{\[Eta]cell,\[Eta]mod}]
 
 
 (* ::Subsection::Closed:: *)
-(*GaAs/Si*)
+(*General 2J-2T*)
 
 
-TwoTer$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,jmax,step},
+(* ::Text:: *)
+(*General dual junction 2T tandem model, does not include InGaP/GaAs/Si. *)
+
+
+TwoTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=GaAsCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=topCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=botCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=GaAsCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=topCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];,3];
+JscBot=botCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
+,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1130,9 +1193,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=GaAsCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
-coupling=\[Eta]12*topOutput[[4]];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+topOutput=topCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
+coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
+AppendTo[V,topOutput[[3]]+botCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}];
 
@@ -1147,9 +1210,9 @@ J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
 V=IV[[1,1]];
 While[V>0,
 Jsc=Jsc*1.001;
-topOutput=GaAsCell[spec,T,{"J",Jsc},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
-coupling=\[Eta]12*topOutput[[4]];
-V=topOutput[[3]]+SiCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]];
+topOutput=topCell[rawJscTop,T,{"J",Jsc},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
+coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
+V=topOutput[[3]]+botCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
 AppendTo[IV,{V,Jsc,V*Jsc}]
 ];
 
@@ -1159,30 +1222,36 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-TwoTer$GaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,jmax,step},
+
+TwoTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=GaAsCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=topCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=botCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=GaAsCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=topCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=botCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1191,9 +1260,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=GaAsCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
-coupling=\[Eta]12*topOutput[[4]];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+topOutput=topCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
+coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
+AppendTo[V,topOutput[[3]]+botCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}
 ];
@@ -1210,28 +1279,30 @@ Return[Pmpp]
 
 
 (* ::Subsection::Closed:: *)
-(*InGaP/Si*)
+(*GaAs/Si (to be deprecated) *)
 
 
-TwoTer$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,jmax,step},
+TwoTer$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=InGaPCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=GaAsCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=InGaPCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=GaAsCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];,3];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1240,9 +1311,120 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=InGaPCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+	topOutput=GaAsCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
+	coupling=\[Eta]12*topOutput[[4]];
+	AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
+,{j,J}];
+
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+jmax=Extract[J,First@Position[P,n_/;n==Max[P]]];
+J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
+];
+
+(*correct for tandem Jsc by inching towards its exact value*)
+V=IV[[1,1]];
+While[V>0,
+Jsc=Jsc*1.001;
+topOutput=GaAsCell[rawJscTop,T,{"J",Jsc},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+V=topOutput[[3]]+SiCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
+AppendTo[IV,{V,Jsc,V*Jsc}]
+];
+
+IV=Reverse[SortBy[DeleteDuplicatesBy[IV,#[[2]]&],#[[2]]&]];
+P=IV[[All,3]];
+Voc=Last[IV[[All,1]]];
+{{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
+FF=Pmpp/(Jsc*Voc);
+
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
+]
+
+
+TwoTer$GaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
+\[Eta]12=OptionValue[CouplingEfficiency];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=GaAsCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
+
+(* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
+(* only 3 iterations are performed *)
+If[JscTop>JscBot&&\[Eta]12>0,
+Do[
+topOutput=GaAsCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
+coupling=\[Eta]12*topOutput[[4]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
+,3];
+];
+Jsc=Min[JscTop,JscBot];
+
+step=Abs[Jsc/5];
+J=Range[Jsc,0,-step];
+IV={};
+While[Abs[step]>=Jsc*0.01,
+V={};
+
+Do[
+	topOutput=GaAsCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
+	coupling=\[Eta]12*topOutput[[4]];
+	AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
+,{j,J}];
+
+P=J*V;
+step=step/2;
+Pmpp=Max[P];
+jmax=Extract[J,First@Position[P,n_/;n==Pmpp]];
+J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
+];
+
+Return[Pmpp]
+]
+
+
+(* ::Subsection::Closed:: *)
+(*InGaP/Si (to be deprecated) *)
+
+
+TwoTer$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
+\[Eta]12=OptionValue[CouplingEfficiency];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=InGaPCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
+
+(* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
+(* only 3 iterations are performed *)
+If[JscTop>JscBot&&\[Eta]12>0,
+Do[
+topOutput=InGaPCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
+coupling=\[Eta]12*topOutput[[4]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];,3];
+];
+Jsc=Min[JscTop,JscBot];
+
+step=Abs[Jsc/5];
+J=Range[Jsc,0,-step];
+IV={};
+While[Abs[step]>=Jsc*0.01,
+V={};
+
+Do[
+topOutput=InGaPCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
+coupling=\[Eta]12*topOutput[[4]];
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}];
 
@@ -1257,9 +1439,9 @@ J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
 V=IV[[1,1]];
 While[V>0,
 Jsc=Jsc*1.001;
-topOutput=InGaPCell[spec,T,{"J",Jsc},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=InGaPCell[rawJscTop,T,{"J",Jsc},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-V=topOutput[[3]]+SiCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]];
+V=topOutput[[3]]+SiCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
 AppendTo[IV,{V,Jsc,V*Jsc}]
 ];
 
@@ -1269,30 +1451,32 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-TwoTer$InGaPSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,jmax,step},
+TwoTer$InGaPSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=InGaPCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=InGaPCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=InGaPCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=InGaPCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1301,9 +1485,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=InGaPCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=InGaPCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}
 ];
@@ -1327,18 +1511,24 @@ Return[Pmpp]
 (*coupling from InGaP to Si is neglected, only consider coupling for adjacent cells. *)
 
 
-TwoTer$InGapGaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,\[Eta]23,topQE,midQE,botQE,coupling,topOutput,midOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscMid,sJscBot,thickness$top,thickness$mid,jmax,step},
+TwoTer$InGapGaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,\[Eta]23,topQE,midQE,botQE,coupling,topOutput,midOutput,topCellParameters,midCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscMid,JscBot,rawJscTop,rawJscMid,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency][[1]];
 \[Eta]23=OptionValue[CouplingEfficiency][[2]];
 topQE=OptionValue[SubQE][[1]];
 midQE=OptionValue[SubQE][[2]];
 botQE=OptionValue[SubQE][[3]];
+topCellParameters=OptionValue[SubCells][[1]];
+midCellParameters=OptionValue[SubCells][[2]];
+botCellParameters=OptionValue[SubCells][[3]];
 
-sJscTop=InGaPCell[spec,T,{"V",0},DeviceQE->topQE][[2]];
-sJscMid=GaAsCell[spec,T,{"V",0},DeviceQE->midQE][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]];
+rawJscTop=CalcJsc[spec,topQE];
+rawJscMid=CalcJsc[spec,midQE];
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=InGaPCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscMid=GaAsCell[rawJscMid,T,{"V",0},DeviceParameters->midCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
-Jsc=Min[sJscTop,sJscMid,sJscBot];
+Jsc=Min[JscTop,JscMid,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1346,11 +1536,11 @@ IV={};
 While[Abs[step]>=Jsc*0.01,
 V={};
 Do[
-topOutput=InGaPCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE];
+topOutput=InGaPCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-midOutput=GaAsCell[spec,T,{"J",j},LuminescentCoupling->coupling,OutputCoupling->True,DeviceQE->midQE];
+midOutput=GaAsCell[rawJscMid,T,{"J",j},LuminescentCoupling->coupling,OutputCoupling->True,DeviceParameters->midCellParameters];
 coupling=\[Eta]23*midOutput[[4]];
-AppendTo[V,topOutput[[3]]+midOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE][[3]]],{j,J}];
+AppendTo[V,topOutput[[3]]+midOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]],{j,J}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -1362,11 +1552,11 @@ J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
 V=IV[[1,1]];
 While[V>0,
 Jsc=Jsc*1.01;
-topOutput=InGaPCell[spec,T,{"J",Jsc},OutputCoupling->True,DeviceQE->topQE];
+topOutput=InGaPCell[rawJscTop,T,{"J",Jsc},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-midOutput=GaAsCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,OutputCoupling->True,DeviceQE->midQE];
+midOutput=GaAsCell[rawJscMid,T,{"J",Jsc},LuminescentCoupling->coupling,OutputCoupling->True,DeviceParameters->midCellParameters];
 coupling=\[Eta]23*midOutput[[4]];
-V=topOutput[[3]]+midOutput[[3]]+SiCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceQE->botQE][[3]];
+V=topOutput[[3]]+midOutput[[3]]+SiCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
 AppendTo[IV,{V,Jsc,V*Jsc}];
 ];
 
@@ -1376,22 +1566,28 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscMid,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscMid,JscBot}
 ]
 
 
-TwoTer$InGapGaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,\[Eta]23,topQE,midQE,botQE,coupling,topOutput,midOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscMid,sJscBot,thickness$top,thickness$mid,jmax,step},
+TwoTer$InGapGaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,\[Eta]23,topQE,midQE,botQE,coupling,topOutput,midOutput,topCellParameters,midCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscMid,JscBot,rawJscTop,rawJscMid,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency][[1]];
 \[Eta]23=OptionValue[CouplingEfficiency][[2]];
 topQE=OptionValue[SubQE][[1]];
 midQE=OptionValue[SubQE][[2]];
 botQE=OptionValue[SubQE][[3]];
+topCellParameters=OptionValue[SubCells][[1]];
+midCellParameters=OptionValue[SubCells][[2]];
+botCellParameters=OptionValue[SubCells][[3]];
 
-sJscTop=InGaPCell[spec,T,{"V",0},DeviceQE->topQE][[2]];
-sJscMid=GaAsCell[spec,T,{"V",0},DeviceQE->midQE][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]];
+rawJscTop=CalcJsc[spec,topQE];
+rawJscMid=CalcJsc[spec,midQE];
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=InGaPCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscMid=GaAsCell[rawJscMid,T,{"V",0},DeviceParameters->midCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
-Jsc=Min[sJscTop,sJscMid,sJscBot];
+Jsc=Min[JscTop,JscMid,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1400,11 +1596,11 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=InGaPCell[spec,T,{"J",j},OutputCoupling->True,DeviceQE->topQE];
+topOutput=InGaPCell[rawJscTop,T,{"J",j},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-midOutput=GaAsCell[spec,T,{"J",j},LuminescentCoupling->coupling,OutputCoupling->True,DeviceQE->midQE];
+midOutput=GaAsCell[rawJscMid,T,{"J",j},LuminescentCoupling->coupling,OutputCoupling->True,DeviceParameters->midCellParameters];
 coupling=\[Eta]23*midOutput[[4]];
-AppendTo[V,topOutput[[3]]+midOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE][[3]]]
+AppendTo[V,topOutput[[3]]+midOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}
 ];
@@ -1420,38 +1616,38 @@ Return[Pmpp]
 ]
 
 
-(* ::Subsection::Closed:: *)
-(*perovskite/Si*)
+(* ::Subsection:: *)
+(*perovskite/Si (to be deprecated) *)
 
 
 (* ::Subsubsection::Closed:: *)
 (*version 1: 5 parameter model perovskite*)
 
 
-TwoTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,thickness$top,jmax,step},
+TwoTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=TwoDiodePerovskiteCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[\[Eta]12>0,
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,
 3];
 ];
-];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1460,9 +1656,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}];
 
@@ -1477,9 +1673,9 @@ J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
 V=IV[[1,1]];
 While[V>0,
 Jsc=Jsc*1.001;
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",Jsc},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"J",Jsc},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-V=topOutput[[3]]+SiCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]];
+V=topOutput[[3]]+SiCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
 AppendTo[IV,{V,Jsc,V*Jsc}]
 ];
 
@@ -1489,34 +1685,34 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-TwoTer$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,thickness$top,jmax,step},
+TwoTer$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=TwoDiodePerovskiteCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[\[Eta]12>0,
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,
 3];
 ];
-];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1525,9 +1721,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}
 ];
@@ -1547,29 +1743,29 @@ Return[Pmpp]
 (*version 2: physics-based model perovskite*)
 
 
-TwoTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,thickness$top,jmax,step},
+TwoTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=PerovskiteCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[\[Eta]12>0,
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=PerovskiteCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=PerovskiteCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,3];
 ];
-];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1578,9 +1774,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=PerovskiteCell[spec,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=PerovskiteCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}];
 
@@ -1595,9 +1791,9 @@ J=DeleteCases[{jmax-step,jmax,jmax+step},_?(#>Jsc&)];
 V=IV[[1,1]];
 While[V>0,
 Jsc=Jsc*1.001;
-topOutput=PerovskiteCell[spec,T,{"J",Jsc},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=PerovskiteCell[rawJscTop,T,{"J",Jsc},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-V=topOutput[[3]]+SiCell[spec,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]];
+V=topOutput[[3]]+SiCell[rawJscBot,T,{"J",Jsc},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]];
 AppendTo[IV,{V,Jsc,V*Jsc}]
 ];
 
@@ -1607,34 +1803,34 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
 
-TwoTer$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,sJscTop,sJscBot,thickness$top,jmax,step},
+TwoTer$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+JscTop=PerovskiteCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceParameters->botCellParameters][[2]];
 
 (* when LC is present, and bottom cell Jsc is smaller than top cell Jsc, JscBot needs to be corrected for LC. *)
 (* only 3 iterations are performed *)
-If[\[Eta]12>0,
-If[sJscTop>sJscBot,
+If[JscTop>JscBot&&\[Eta]12>0,
 Do[
-topOutput=PerovskiteCell[spec,T,{"J",sJscBot},OutputCoupling->True,DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=PerovskiteCell[rawJscTop,T,{"J",JscBot},OutputCoupling->True,DeviceParameters->topCellParameters];
 coupling=\[Eta]12*topOutput[[4]];
-sJscBot=SiCell[spec,T,{"V",0},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[2]];
 ,3];
 ];
-];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -1643,9 +1839,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=PerovskiteCell[spec,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceQE->topQE,DeviceParameters->topCellParameters];
+topOutput=PerovskiteCell[rawJscTop,T,{"J",j},OutputCoupling->(\[Eta]12>0),DeviceParameters->topCellParameters];
 coupling=If[\[Eta]12>0,\[Eta]12*topOutput[[4]],0];
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},LuminescentCoupling->coupling,DeviceParameters->botCellParameters][[3]]]
 ,
 {j,J}
 ];
@@ -1661,78 +1857,124 @@ Return[Pmpp]
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*4T tandem modules*)
 
 
 (* ::Subsection::Closed:: *)
-(*GaAs/Si*)
+(*General 2J-4T*)
 
 
-FourTer$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
+(* ::Text:: *)
+(*Dual junction 4T tandem. *)
+
+
+FourTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
 \[Eta]12=OptionValue[CouplingEfficiency];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
 
-{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=GaAsCell[spec,T,DeviceQE->topQE];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
 
-coupling=\[Eta]12*GaAsCell[spec,T,{"V",Vmpp[1]},DeviceQE->topQE,OutputCoupling->True][[4]];
+{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=topCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
 
-{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[spec,T,LuminescentCoupling->coupling,DeviceQE->botQE];
+coupling=\[Eta]12*topCell[rawJscTop,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]];
 
-Pmpp=Pmpp[1]+Pmpp[2];
+{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=botCell[rawJscBot,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
 
-{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp,{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
+Pmpp["total"]=Pmpp[1]+Pmpp[2];
+
+{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp["total"],{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
 
 ]
 
 
 (* ::Subsection::Closed:: *)
-(*InGaP/Si*)
+(*GaAs/Si (to be deprecated) *)
 
 
-FourTer$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
-\[Eta]12=OptionValue[CouplingEfficiency];
-topQE=OptionValue[SubQE][[1]];
-botQE=OptionValue[SubQE][[2]];
-
-{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=InGaPCell[spec,T,DeviceQE->topQE];
-
-coupling=\[Eta]12*InGaPCell[spec,T,{"V",Vmpp[1]},DeviceQE->topQE,OutputCoupling->True][[4]];
-
-{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[spec,T,LuminescentCoupling->coupling,DeviceQE->botQE];
-
-Pmpp=Pmpp[1]+Pmpp[2];
-
-{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp,{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
-
-]
-
-
-(* ::Subsection:: *)
-(*perovskite/Si*)
-
-
-(* ::Subsubsection::Closed:: *)
-(*version 1: 5 parameter model perovskite*)
-
-
-FourTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
+FourTer$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=TwoDiodePerovskiteCell[spec,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
 
-coupling=If[\[Eta]12>0,\[Eta]12*TwoDiodePerovskiteCell[spec,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]],0];
+{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=GaAsCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
 
-{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[spec,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
+coupling=\[Eta]12*GaAsCell[rawJscTop,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]];
 
-Pmpp=Pmpp[1]+Pmpp[2];
+{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[rawJscBot,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
 
-{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp,{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
+Pmpp["total"]=Pmpp[1]+Pmpp[2];
+
+{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp["total"],{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
+
+]
+
+
+(* ::Subsection::Closed:: *)
+(*InGaP/Si (to be deprecated) *)
+
+
+FourTer$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
+\[Eta]12=OptionValue[CouplingEfficiency];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+
+{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=InGaPCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
+
+coupling=\[Eta]12*InGaPCell[rawJscTop,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]];
+
+{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[rawJscBot,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
+
+Pmpp["total"]=Pmpp[1]+Pmpp[2];
+
+{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp["total"],{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
+
+]
+
+
+(* ::Subsection::Closed:: *)
+(*perovskite/Si (to be deprecated) *)
+
+
+(* ::Subsubsection::Closed:: *)
+(*version 1: 5 parameter model perovskite*)
+
+
+FourTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
+\[Eta]12=OptionValue[CouplingEfficiency];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+
+{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=TwoDiodePerovskiteCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
+
+coupling=If[\[Eta]12>0,\[Eta]12*TwoDiodePerovskiteCell[rawJscTop,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]],0];
+
+{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[rawJscBot,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
+
+Pmpp["total"]=Pmpp[1]+Pmpp[2];
+
+{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp["total"],{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
 
 ]
 
@@ -1741,69 +1983,79 @@ Pmpp=Pmpp[1]+Pmpp[2];
 (*version 2: physics-based model perovskite*)
 
 
-FourTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
+FourTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=PerovskiteCell[spec,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
 
-coupling=If[\[Eta]12>0,\[Eta]12*PerovskiteCell[spec,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]],0];
+{IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=PerovskiteCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
 
-{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[spec,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
+coupling=If[\[Eta]12>0,\[Eta]12*PerovskiteCell[rawJscTop,T,{"V",Vmpp[1]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True][[4]],0];
 
-Pmpp=Pmpp[1]+Pmpp[2];
+{IV[2],Jsc[2],Voc[2],FF[2],Pmpp[2],Jmpp[2],Vmpp[2]}=SiCell[rawJscBot,T,LuminescentCoupling->coupling,DeviceQE->botQE,DeviceParameters->botCellParameters];
 
-{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp,{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
+Pmpp["total"]=Pmpp[1]+Pmpp[2];
+
+{{IV[1],IV[2]},{Jsc[1],Jsc[2]},{Voc[1],Voc[2]},{FF[1],FF[2]},Pmpp["total"],{Jmpp[1],Jmpp[2]},{Vmpp[1],Vmpp[2]}}
 
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Mechanically voltage matched modules*)
 
 
 (* ::Subsection::Closed:: *)
-(*GaAs/Si*)
+(*General 2J-VMatch*)
 
 
-VMatch$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
 stringNum=OptionValue[StringNumber];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=GaAsCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=topCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=botCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[GaAsCell[spec,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[2]],SiCell[spec,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[2]]];
+maxJsc=Max[topCell[rawJscTop,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],botCell[rawJscBot,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[3]]*stringNum[[2]];
+x2=botCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=GaAsCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 a=x2;,
-x2=GaAsCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[3]]*stringNum[[1]];
+x2=topCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=GaAsCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
 x2=(a+b)/2;
-topOutput=GaAsCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -1816,9 +2068,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=GaAsCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,OutputCoupling->True];(* from single cell output *)
+topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -1837,16 +2089,23 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-VMatch$GaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
 stringNum=OptionValue[StringNumber];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=GaAsCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=topCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=botCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -1857,9 +2116,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=GaAsCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,OutputCoupling->True];(* from single cell output *)
+topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -1873,44 +2132,49 @@ Return[Pmpp]
 
 
 (* ::Subsection::Closed:: *)
-(*InGaP/Si*)
+(*GaAs/Si (to be deprecated) *)
 
 
-VMatch$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
 stringNum=OptionValue[StringNumber];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=InGaPCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; 
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=GaAsCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[InGaPCell[spec,T,{"V",0},DeviceQE->topQE,DeviceArea->1/stringNum[[1]]][[2]],SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceArea->1/stringNum[[2]]][[2]]];
+maxJsc=Max[GaAsCell[rawJscTop,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],SiCell[rawJscBot,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceQE->botQE,DeviceArea->1/stringNum[[2]]][[3]]*stringNum[[2]];
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=InGaPCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=GaAsCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 a=x2;,
-x2=InGaPCell[spec,T,{"J",-maxJsc},DeviceQE->topQE,DeviceArea->1/stringNum[[1]]][[3]]*stringNum[[1]];
+x2=GaAsCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=InGaPCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=GaAsCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
 x2=(a+b)/2;
-topOutput=InGaPCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+topOutput=GaAsCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -1923,9 +2187,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=InGaPCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceArea->1/stringNum[[1]],OutputCoupling->True];(* from single cell output *)
+topOutput=GaAsCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceArea->1/stringNum[[2]],LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -1944,16 +2208,21 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-VMatch$InGaPSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$GaAsSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
 stringNum=OptionValue[StringNumber];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=InGaPCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=GaAsCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -1964,9 +2233,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=InGaPCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceArea->1/stringNum[[1]],OutputCoupling->True];(* from single cell output *)
+topOutput=GaAsCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
 coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceArea->1/stringNum[[2]],LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -1979,56 +2248,50 @@ Return[Pmpp]
 ]
 
 
-(* ::Subsection:: *)
-(*perovskite/Si*)
+(* ::Subsection::Closed:: *)
+(*InGaP/Si (to be deprecated) *)
 
 
-(* ::Subsubsection::Closed:: *)
-(*version 1: 5 parameter model perovskite*)
-
-
-VMatch$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
-If[\[Eta]12>0,calcPRLC=True];
 stringNum=OptionValue[StringNumber];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=TwoDiodePerovskiteCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=InGaPCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],SiCell[spec,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
-
+maxJsc=Max[InGaPCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]]][[2]],SiCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]]][[2]]];
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]]][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+topOutput=InGaPCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 a=x2;,
-x2=TwoDiodePerovskiteCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=InGaPCell[rawJscTop,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]]][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+topOutput=InGaPCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
 x2=(a+b)/2;
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+topOutput=InGaPCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]],OutputCoupling->True];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]],LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -2041,9 +2304,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
+topOutput=InGaPCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]],OutputCoupling->True];(* from single cell output *)
+coupling=\[Eta]12*topOutput[[4]];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]],LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -2062,7 +2325,55 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-VMatch$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$InGaPSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+
+(* tandem specific physical parameters *)
+\[Eta]12=OptionValue[CouplingEfficiency];
+stringNum=OptionValue[StringNumber];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=InGaPCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+Voc=Min[sVocTop,sVocBot];
+
+(* algorithm to generate IV curve and determine mpp efficiently and robustly *)
+(* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
+step=Abs[Voc/5];
+V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
+IV={};
+While[Abs[step]>=Voc*0.005,
+J={};
+Do[
+topOutput=InGaPCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,DeviceArea->1/stringNum[[1]],OutputCoupling->True];(* from single cell output *)
+coupling=\[Eta]12*topOutput[[4]];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,DeviceArea->1/stringNum[[2]],LuminescentCoupling->coupling][[2]]],{j,V}];
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+Pmpp=Max[P];
+vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
+V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+];
+
+Return[Pmpp]
+]
+
+
+(* ::Subsection::Closed:: *)
+(*perovskite/Si (to be deprecated) *)
+
+
+(* ::Subsubsection::Closed:: *)
+(*version 1: 5 parameter model perovskite*)
+
+
+VMatch$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2073,8 +2384,89 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=TwoDiodePerovskiteCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=TwoDiodePerovskiteCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+
+(* small algorithm to determine the correct tandem Voc considering PR & LC *)
+(* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
+This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
+a=sVocTop;
+b=sVocBot;
+maxJsc=Max[TwoDiodePerovskiteCell[rawJscTop,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],SiCell[rawJscBot,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
+
+If[a>b,
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=Min[x2,a];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+a=x2;,
+x2=TwoDiodePerovskiteCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=Min[x2,b];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+b=x2;
+];
+
+n=1;
+While[Abs[jDiff]>=2&&n<=15,
+x2=(a+b)/2;
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
+n++;];
+Voc=x2;
+
+(* algorithm to generate IV curve and determine mpp efficiently and robustly *)
+(* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
+step=Abs[Voc/5];
+V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
+IV={};
+While[Abs[step]>=Voc*0.005,
+J={};
+Do[
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
+V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+];
+
+
+IV=Reverse[SortBy[DeleteDuplicatesBy[IV,First],First]];
+P=IV[[All,3]];
+Jsc=Last[IV[[All,2]]];
+{{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
+FF=Pmpp/(Jsc*Voc);
+
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}
+]
+
+
+VMatch$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+
+(* tandem specific physical parameters *)
+\[Eta]12=OptionValue[CouplingEfficiency];
+If[\[Eta]12>0,calcPRLC=True];
+stringNum=OptionValue[StringNumber];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=TwoDiodePerovskiteCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -2085,9 +2477,9 @@ V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 step=step/2;
 Pmpp=Max[P];
@@ -2103,7 +2495,7 @@ Return[Pmpp]
 (*version 2: physics-based model perovskite*)
 
 
-VMatch$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2114,37 +2506,40 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=PerovskiteCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=PerovskiteCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[PerovskiteCell[spec,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],SiCell[spec,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[2]]];
+maxJsc=Max[PerovskiteCell[rawJscTop,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],SiCell[rawJscBot,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE][[2]]];
 
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 a=x2;,
-x2=PerovskiteCell[spec,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=PerovskiteCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
 x2=(a+b)/2;
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -2157,9 +2552,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=PerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=PerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -2177,7 +2572,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-VMatch$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+VMatch$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2188,8 +2583,11 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=PerovskiteCell[spec,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE,1/stringNum[[1]]]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE,1/stringNum[[2]]];
+
+sVocTop=PerovskiteCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -2200,9 +2598,9 @@ V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=PerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=PerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
 P=J*V;
 step=step/2;
 Pmpp=Max[P];
@@ -2214,7 +2612,7 @@ Return[Pmpp]
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*3T voltage matched modules*)
 
 
@@ -2223,7 +2621,133 @@ Return[Pmpp]
 
 
 (* ::Subsection::Closed:: *)
-(*GaAs/Si*)
+(*General 2J-3T*)
+
+
+ThreeTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+
+(* tandem specific physical parameters *)
+\[Eta]12=OptionValue[CouplingEfficiency];
+If[\[Eta]12>0,calcPRLC=True];
+stringNum=OptionValue[StringNumber];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=topCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=botCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+
+(* small algorithm to determine the correct tandem Voc considering PR & LC *)
+(* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
+This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
+a=sVocTop;
+b=sVocBot;
+maxJsc=Max[topCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]]/stringNum[[1]]*stringNum[[2]],botCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
+If[a>b,
+x2=botCell[rawJscBot,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=Min[x2,a];
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+a=x2;,
+x2=topCell[rawJscTop,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=Min[x2,b];
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+b=x2;
+];
+
+n=1;
+While[Abs[jDiff]>=2&&n<=15,
+x2=(a+b)/2;
+topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
+n++;];
+Voc=x2;
+
+(* algorithm to generate IV curve and determine mpp efficiently and robustly *)
+(* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
+step=Abs[Voc/5];
+V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
+IV={};
+While[Abs[step]>=Voc*0.005,
+J={};
+Do[
+topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}]; (*current is always normalized to per unit DeviceArea*)
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
+V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+];
+
+
+IV=Reverse[SortBy[DeleteDuplicatesBy[IV,First],First]];
+P=IV[[All,3]];
+Jsc=Last[IV[[All,2]]];
+{{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
+FF=Pmpp/(Jsc*Voc);
+
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}
+]
+
+
+ThreeTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+
+(* tandem specific physical parameters *)
+\[Eta]12=OptionValue[CouplingEfficiency];
+If[\[Eta]12>0,calcPRLC=True];
+stringNum=OptionValue[StringNumber];
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
+topQE=OptionValue[SubQE][[1]];
+botQE=OptionValue[SubQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+
+rawJscTop=CalcJsc[spec,topQE]; (* raw photogeneration current calculated via EQE *)
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=topCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=botCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+Voc=Min[sVocTop,sVocBot];
+
+(* algorithm to generate IV curve and determine mpp efficiently and robustly *)
+(* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
+step=Abs[Voc/5];
+V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
+IV={};
+While[Abs[step]>=Voc*0.005,
+J={};
+Do[
+topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+Pmpp=Max[P];
+vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
+V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+];
+
+Return[Pmpp]
+]
+
+
+(* ::Subsection::Closed:: *)
+(*GaAs/Si (to be deprecated) *)
 
 
 ThreeTer$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
@@ -2330,7 +2854,7 @@ Return[Pmpp]
 
 
 (* ::Subsection::Closed:: *)
-(*InGaP/Si*)
+(*InGaP/Si (to be deprecated) *)
 
 
 ThreeTer$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,stringNum,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
@@ -2436,15 +2960,15 @@ Return[Pmpp]
 ]
 
 
-(* ::Subsection:: *)
-(*perovskite/Si*)
+(* ::Subsection::Closed:: *)
+(*perovskite/Si (to be deprecated) *)
 
 
 (* ::Subsubsection::Closed:: *)
 (*version 1: 5 parameter model perovskite*)
 
 
-ThreeTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2455,37 +2979,40 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=TwoDiodePerovskiteCell[spec,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=TwoDiodePerovskiteCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]]/stringNum[[1]]*stringNum[[2]],SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
+maxJsc=Max[TwoDiodePerovskiteCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]]/stringNum[[1]]*stringNum[[2]],SiCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
 
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 a=x2;,
-x2=TwoDiodePerovskiteCell[spec,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=TwoDiodePerovskiteCell[rawJscTop,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=4&&n<=15,
 x2=(a+b)/2;
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -2498,9 +3025,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -2519,7 +3046,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-ThreeTer$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2530,8 +3057,11 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=TwoDiodePerovskiteCell[spec,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=TwoDiodePerovskiteCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -2542,9 +3072,9 @@ V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=TwoDiodePerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
 P=J*V;
 step=step/2;
 Pmpp=Max[P];
@@ -2560,7 +3090,7 @@ Return[Pmpp]
 (*version 2: physics-based model perovskite*)
 
 
-ThreeTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2571,37 +3101,40 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=PerovskiteCell[spec,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=PerovskiteCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 
 (* small algorithm to determine the correct tandem Voc considering PR & LC *)
 (* to avoid FindRoot to blow up at probe points too far beyond Voc, the first probe point x2 need to be determined sufficiently close to the lower voltage of the sub-cells.
 This is obtained by calculating the voltage at negative Jsc, Jsc here is the higher of the two sub-cells. This point will definitely be an upper bound. *)
 a=sVocTop;
 b=sVocBot;
-maxJsc=Max[PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]]/stringNum[[1]]*stringNum[[2]],SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]]];
+maxJsc=Max[PerovskiteCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]]/stringNum[[1]]*stringNum[[2]],SiCell[rawJscBot,T,{"V",0},DeviceQE->botQE][[2]]];
 
 If[a>b,
-x2=SiCell[spec,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+x2=SiCell[rawJscBot,T,{"J",-maxJsc},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 x2=Min[x2,a];
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 a=x2;,
-x2=PerovskiteCell[spec,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+x2=PerovskiteCell[rawJscTop,T,{"J",-maxJsc},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 x2=Min[x2,b];
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
 x2=(a+b)/2;
-topOutput=PerovskiteCell[spec,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+topOutput=PerovskiteCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[spec,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+SiCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
@@ -2614,9 +3147,9 @@ IV={};
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=PerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=PerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
 P=J*V;
 IV=Join[IV,Transpose[{V,J,P}]];
 step=step/2;
@@ -2634,7 +3167,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-ThreeTer$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2645,8 +3178,11 @@ botQE=OptionValue[SubQE][[2]];
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sVocTop=PerovskiteCell[spec,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-sVocBot=SiCell[spec,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+sVocTop=PerovskiteCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+sVocBot=SiCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
@@ -2657,9 +3193,9 @@ V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 While[Abs[step]>=Voc*0.005,
 J={};
 Do[
-topOutput=PerovskiteCell[spec,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+topOutput=PerovskiteCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
 coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+SiCell[spec,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
+AppendTo[J,topOutput[[2]]+SiCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
 P=J*V;
 step=step/2;
 Pmpp=Max[P];
@@ -2671,7 +3207,7 @@ Return[Pmpp]
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Areal matched modules*)
 
 
@@ -2680,10 +3216,123 @@ Return[Pmpp]
 
 
 (* ::Subsection::Closed:: *)
-(*GaAs/Si*)
+(*General 2J-AMatched*)
 
 
-AMatch$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,DeviceArea$Ratio,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+(* ::Text:: *)
+(*General dual junction model for areal matched tandem with top cell current LARGER than bottom cell current when area is the same (does not work for InGaP/Si). *)
+
+
+AMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
+\[Eta]12=OptionValue[CouplingEfficiency];
+If[\[Eta]12>0,calcPRLC=True];
+DeviceArea$Ratio=OptionValue[AreaRatio];
+
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
+topQE=OptionValue[SubQE][[1]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
+botQE=OptionValue[SubQE][[2]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
+botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][botQE[[All,1]]]*(1-DeviceArea$Ratio); 
+(* linearly DeviceArea weighted effective SubQE for bottom cell = weighted Si SubQE under top cell + weighted Si unshaded SubQE *)
+
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+JscTop=topCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=botCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+
+If[JscTop>JscBot&&calcPRLC,
+Do[
+topOutput=topCell[rawJscTop,T,{"J",JscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
+JscBot=botCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+,3];
+];
+Jsc=Min[JscTop,JscBot];
+
+step=Abs[Jsc/5];
+J=Range[Jsc,0,-step];
+IV={};
+While[Abs[step]>=Jsc*0.01,
+V={};
+
+Do[
+topOutput=topCell[rawJscTop,T,{"J",j},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]]*DeviceArea$Ratio,0];
+AppendTo[V,topOutput[[3]]+botCell[rawJscBot,T,{"J",j},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[3]]]
+,
+{j,J}];
+
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+jmax=Extract[J,First@Position[P,n_/;n==Max[P]]];
+J={jmax-step,jmax,jmax+step};
+
+];
+
+IV=Reverse[SortBy[DeleteDuplicatesBy[IV,#[[2]]&],#[[2]]&]];
+P=IV[[All,3]];
+Voc=Last[IV[[All,1]]];
+{{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
+FF=Pmpp/(Jsc*Voc);
+
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
+]
+
+
+AMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
+\[Eta]12=OptionValue[CouplingEfficiency];
+If[\[Eta]12>0,calcPRLC=True];
+DeviceArea$Ratio=OptionValue[AreaRatio];
+
+topCell=OptionValue[MaterialSystem][[1]];
+botCell=OptionValue[MaterialSystem][[2]];
+topQE=OptionValue[SubQE][[1]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
+botQE=OptionValue[SubQE][[2]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
+botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][botQE[[All,1]]]*(1-DeviceArea$Ratio); 
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
+
+JscTop=topCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=botCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+
+Jsc=Min[JscTop,JscBot];
+
+step=Abs[Jsc/5];
+J=Range[Jsc,0,-step];
+IV={};
+While[Abs[step]>=Jsc*0.01,
+V={};
+
+Do[
+topOutput=topCell[rawJscTop,T,{"J",j},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];
+coupling=If[calcPRLC,\[Eta]12*topOutput[[4]]*DeviceArea$Ratio,0];
+AppendTo[V,topOutput[[3]]+botCell[rawJscBot,T,{"J",j},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[3]]]
+,
+{j,J}];
+
+P=J*V;
+IV=Join[IV,Transpose[{V,J,P}]];
+step=step/2;
+Pmpp=Max[P];
+jmax=Extract[J,First@Position[P,n_/;n==Pmpp]];
+J={jmax-step,jmax,jmax+step};
+];
+
+Return[Pmpp]
+]
+
+
+(* ::Subsection::Closed:: *)
+(*GaAs/Si (to be deprecated) *)
+
+
+AMatch$GaAsSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,DeviceArea$Ratio,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 DeviceArea$Ratio=OptionValue[AreaRatio];
 topQE=OptionValue[SubQE][[1]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
@@ -2691,17 +3340,17 @@ botQE=OptionValue[SubQE][[2]]\[Transpose]*{1,DeviceArea$Ratio}//Transpose;
 botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][botQE[[All,1]]]*(1-DeviceArea$Ratio); 
 (* linearly DeviceArea weighted effective SubQE for bottom cell = weighted Si SubQE under top cell + weighted Si unshaded SubQE *)
 
-sJscTop=GaAsCell[spec,T,{"V",0},DeviceQE->topQE][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]];
+JscTop=GaAsCell[spec,T,{"V",0},DeviceQE->topQE][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]];
 
-If[sJscTop>sJscBot,
+If[JscTop>JscBot,
 Do[
-topOutput=GaAsCell[spec,T,{"J",sJscBot},DeviceQE->topQE,OutputCoupling->True];
+topOutput=GaAsCell[spec,T,{"J",JscBot},DeviceQE->topQE,OutputCoupling->True];
 coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,LuminescentCoupling->coupling][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,LuminescentCoupling->coupling][[2]];
 ,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2730,7 +3379,7 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
@@ -2742,25 +3391,30 @@ FF=Pmpp/(Jsc*Voc);
 (*This configuration with top cell larger than bottom cell doesn't make sense. Tandem efficiency always improves when bottom DeviceArea approaches top DeviceArea. *)
 
 
-AMatch$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,DeviceArea$Ratio,topQE,botQE,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+AMatch$InGaPSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,DeviceArea$Ratio,topQE,botQE,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 DeviceArea$Ratio=OptionValue[AreaRatio];
 topQE=OptionValue[SubQE][[1]];
 botQE=OptionValue[SubQE][[2]]\[Transpose]/{1,DeviceArea$Ratio}//Transpose;
 
-sJscTop=InGaPCell[spec,T,{"V",0},DeviceQE->topQE][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE][[2]];
+topCellParameters=OptionValue[SubCells][[1]];
+botCellParameters=OptionValue[SubCells][[2]];
+rawJscTop=CalcJsc[spec,topQE]; 
+rawJscBot=CalcJsc[spec,botQE];
 
-If[sJscTop>sJscBot,
+JscTop=InGaPCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+
+If[JscTop>JscBot,
 
 Do[
-topOutput=InGaPCell[spec,T,{"J",sJscBot},DeviceQE->topQE,OutputCoupling->True];
+topOutput=InGaPCell[rawJscTop,T,{"J",JscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
 coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,LuminescentCoupling->coupling][[2]];
+JscBot=SiCell[rawJscBot,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 ,3];
 
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2769,9 +3423,9 @@ While[Abs[step]>=Jsc*0.01,
 V={};
 
 Do[
-topOutput=InGaPCell[spec,T,{"J",j},DeviceQE->topQE,OutputCoupling->True];
+topOutput=InGaPCell[rawJscTop,T,{"J",j},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
 coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
-AppendTo[V,topOutput[[3]]+SiCell[spec,T,{"J",j},DeviceQE->botQE,LuminescentCoupling->coupling][[3]]]
+AppendTo[V,topOutput[[3]]+SiCell[rawJscBot,T,{"J",j},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[3]]]
 ,
 {j,J}];
 
@@ -2789,19 +3443,19 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-(* ::Subsection:: *)
-(*perovskite/Si*)
+(* ::Subsection::Closed:: *)
+(*perovskite/Si (to be deprecated) *)
 
 
 (* ::Subsubsection::Closed:: *)
 (*version 1: 5 parameter model perovskite*)
 
 
-AMatch$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+AMatch$2DiodePerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -2812,17 +3466,17 @@ botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][bot
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscTop=TwoDiodePerovskiteCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
 
-If[sJscTop>sJscBot&&calcPRLC,
+If[JscTop>JscBot&&calcPRLC,
 Do[
-topOutput=TwoDiodePerovskiteCell[spec,T,{"J",sJscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+topOutput=TwoDiodePerovskiteCell[spec,T,{"J",JscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
 coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 ,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2851,11 +3505,11 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-AMatch$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+AMatch$2DiodePerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -2866,10 +3520,10 @@ botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][bot
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscTop=TwoDiodePerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2900,7 +3554,7 @@ Return[Pmpp]
 (*version 2: physics-based model perovskite*)
 
 
-AMatch$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+AMatch$PerovskiteSi[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -2911,17 +3565,17 @@ botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][bot
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
 
-If[sJscTop>sJscBot&&calcPRLC,
+If[JscTop>JscBot&&calcPRLC,
 Do[
-topOutput=PerovskiteCell[spec,T,{"J",sJscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+topOutput=PerovskiteCell[spec,T,{"J",JscBot},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
 coupling=\[Eta]12*topOutput[[4]]*DeviceArea$Ratio;
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]];
 ,3];
 ];
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2950,11 +3604,11 @@ Voc=Last[IV[[All,1]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sJscTop,sJscBot}
+{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,JscTop,JscBot}
 ]
 
 
-AMatch$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,sJscTop,sJscBot,jmax},
+AMatch$PerovskiteSi[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topQE,botQE,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -2965,10 +3619,10 @@ botQE[[All,2]]+=Interpolation[OptionValue[SubQE][[3]],InterpolationOrder->1][bot
 topCellParameters=OptionValue[SubCells][[1]];
 botCellParameters=OptionValue[SubCells][[2]];
 
-sJscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
-sJscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
+JscTop=PerovskiteCell[spec,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
+JscBot=SiCell[spec,T,{"V",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[2]];
 
-Jsc=Min[sJscTop,sJscBot];
+Jsc=Min[JscTop,JscBot];
 
 step=Abs[Jsc/5];
 J=Range[Jsc,0,-step];
@@ -2997,6 +3651,18 @@ Return[Pmpp]
 
 (* ::Chapter:: *)
 (*End*)
+
+
+(* ::Text:: *)
+(*Protect Symbols. *)
+
+
+Protect[SiCell,GaAsCell,InGaPCell,TwoDiodePerovskiteCell,PerovskiteCell];
+Protect[TwoTer2J,TwoTer$GaAsSi,TwoTer$InGaPSi,TwoTer$InGapGaAsSi,TwoTer$2DiodePerovskiteSi,TwoTer$PerovskiteSi,
+FourTer2J,FourTer$GaAsSi,FourTer$InGaPSi,FourTer$2DiodePerovskiteSi,FourTer$PerovskiteSi,
+VMatch2J,VMatch$GaAsSi,VMatch$InGaPSi,VMatch$2DiodePerovskiteSi,VMatch$PerovskiteSi,
+ThreeTer2J,ThreeTer$GaAsSi,ThreeTer$InGaPSi,ThreeTer$2DiodePerovskiteSi,ThreeTer$PerovskiteSi,
+AMatch2J,AMatch$GaAsSi,AMatch$InGaPSi,AMatch$2DiodePerovskiteSi,AMatch$PerovskiteSi];
 
 
 End[]; 
