@@ -536,7 +536,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling from the front *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp}={Null,0,0,0,0,0,0};
 	Goto[end]
 ];
@@ -646,7 +646,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{P,J,V}={0,0,0};
 	Goto[end]
 ];
@@ -753,7 +753,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp}={Null,0,0,0,0,0,0};
 	Goto[end]
 ];
@@ -847,7 +847,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{P,J,V}={0,0,0};
 	Goto[end]
 ];
@@ -945,7 +945,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp}={Null,0,0,0,0,0,0};
 	Goto[end]
 ];
@@ -1040,7 +1040,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{P,J,V}={0,0,0};
 	Goto[end]
 ];
@@ -1130,7 +1130,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Perovskite cell*)
 
 
@@ -1202,7 +1202,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp}={Null,0,0,0,0,0,0};
 	Goto[end]
 ];
@@ -1295,7 +1295,7 @@ Switch[spec,
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{P,J,V}={0,0,0};
 	Goto[end]
 ];
@@ -1409,7 +1409,7 @@ Switch[spec,
 		];
 ];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{IV,Jsc2,Voc,FF,Pmpp,Jmpp,Vmpp}={Null,0,0,0,0,0,0};
 	Goto[end]
 ];
@@ -1515,7 +1515,7 @@ Switch[spec,
 		];
 ];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
-If[Jsc<0.1,
+If[Jsc/cellArea<0.1,
 	{P,J,V}={0,0,0};
 	Goto[end]
 ];
@@ -2333,7 +2333,7 @@ Return[Pmpp]
 ]
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*4T tandem modules*)
 
 
@@ -2550,26 +2550,32 @@ a=sVocTop;
 b=sVocBot;
 maxJsc=Max[topCell[rawJscTop,T,{"V",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[2]],botCell[rawJscBot,T,{"V",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[2]]];
 If[a>b,
-x2=botCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
-x2=Min[x2,a];
-topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
-jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
-a=x2;,
-x2=topCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
-x2=Min[x2,b];
-topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
-jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
-b=x2;
+	x2=botCell[rawJscBot,T,{"J",-maxJsc},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
+	x2=Min[x2,a];
+	topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+	jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+	a=x2;
+,
+	x2=topCell[rawJscTop,T,{"J",-maxJsc},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
+	x2=Min[x2,b];
+	topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+	jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+	b=x2;
 ];
 
 n=1;
 While[Abs[jDiff]>=2&&n<=15,
-x2=(a+b)/2;
-topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
-jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
-If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
-n++;];
+	x2=(a+b)/2;
+	topOutput=topCell[rawJscTop,T,{"V",x2/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];
+	jDiff=topOutput[[2]]+botCell[rawJscBot,T,{"V",x2/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->\[Eta]12*topOutput[[4]]][[2]];
+	If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
+	n++;
+];
 Voc=x2;
+If[Voc<0.05,
+	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}={Null,0,0,0,0,0,0,0,0};
+	Goto[end]
+];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
 (* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
@@ -2577,16 +2583,19 @@ step=Abs[Voc/5];
 V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
-J={};
-Do[
-topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
-coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
-P=J*V;
-IV=Join[IV,Transpose[{V,J,P}]];
-step=step/2;
-vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
-V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+	J={};
+	Do[
+		topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
+		coupling=\[Eta]12*topOutput[[4]];
+		AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]]
+	,
+		{j,V}
+	];
+	P=J*V;
+	IV=Join[IV,Transpose[{V,J,P}]];
+	step=step/2;
+	vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
+	V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
 ];
 
 
@@ -2595,8 +2604,11 @@ P=IV[[All,3]];
 Jsc=Last[IV[[All,2]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
+IV=IV[[All,{1,2}]];
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}
+Label[end];
+Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot};
+
 ]
 
 
@@ -2636,6 +2648,10 @@ Switch[rearSpec,
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 sVocBot=botCell[rawJscBot,T,{"J",0},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
+If[Voc<0.05,
+	Pmpp=0;
+	Goto[end]
+];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
 (* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
@@ -2643,19 +2659,23 @@ step=Abs[Voc/5];
 V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
-J={};
-Do[
-topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
-coupling=\[Eta]12*topOutput[[4]];
-AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]],{j,V}];
-P=J*V;
-IV=Join[IV,Transpose[{V,J,P}]];
-step=step/2;
-Pmpp=Max[P];
-vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
-V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+	J={};
+	Do[
+		topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->True];(* from single cell output *)
+		coupling=\[Eta]12*topOutput[[4]];
+		AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceArea->1/stringNum[[2]],DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]]
+	,
+		{j,V}
+	];
+	P=J*V;
+	IV=Join[IV,Transpose[{V,J,P}]];
+	step=step/2;
+	Pmpp=Max[P];
+	vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
+	V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
 ];
 
+Label[end];
 Return[Pmpp]
 ]
 
@@ -3220,6 +3240,10 @@ jDiff=topOutput[[2]]/stringNum[[1]]*stringNum[[2]]+botCell[rawJscBot,T,{"V",x2/s
 If[(jDiff>0&&a>b)||(jDiff<0&&a<b),b=x2;,a=x2;];
 n++;];
 Voc=x2;
+If[Voc<0.05,
+	{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}={Null,0,0,0,0,0,0,0,0};
+	Goto[end]
+];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
 (* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
@@ -3227,16 +3251,19 @@ step=Abs[Voc/5];
 V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
-J={};
-Do[
-topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}]; (*current is always normalized to per unit DeviceArea*)
-P=J*V;
-IV=Join[IV,Transpose[{V,J,P}]];
-step=step/2;
-vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
-V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+	J={};
+	Do[
+		topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+		coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+		AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]]
+	,
+		{j,V}
+	]; (*current is always normalized to per unit DeviceArea*)
+	P=J*V;
+	IV=Join[IV,Transpose[{V,J,P}]];
+	step=step/2;
+	vmax=Extract[V,First@Position[P,n_/;n==Max[P]]];
+	V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
 ];
 
 
@@ -3245,8 +3272,10 @@ P=IV[[All,3]];
 Jsc=Last[IV[[All,2]]];
 {{Vmpp,Jmpp,Pmpp}}=Extract[IV,Position[P,n_/;n==Max[P]]];
 FF=Pmpp/(Jsc*Voc);
+IV=IV[[All,{1,2}]];
 
-{IV[[All,{1,2}]],Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot}
+Label[end];
+Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot};
 ]
 
 
@@ -3287,6 +3316,10 @@ Switch[rearSpec,
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
 sVocBot=botCell[rawJscBot,T,{"J",0},DeviceQE->botQE,DeviceParameters->botCellParameters][[3]]*stringNum[[2]];
 Voc=Min[sVocTop,sVocBot];
+If[Voc<0.05,
+	Pmpp=0;
+	Goto[end]
+];
 
 (* algorithm to generate IV curve and determine mpp efficiently and robustly *)
 (* this is done by first seeding some initial points on the IV curve, determine maximum among them, then perturb at that point with perturbation step smaller than (half of) previous gaps between the points.  *)
@@ -3294,19 +3327,23 @@ step=Abs[Voc/5];
 V=Join[Range[Voc,0.9*Voc,-Voc/30],Range[0.8*Voc,0,-step]];
 IV={};
 While[Abs[step]>=Voc*0.005,
-J={};
-Do[
-topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
-coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
-AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]],{j,V}];
-P=J*V;
-IV=Join[IV,Transpose[{V,J,P}]];
-step=step/2;
-Pmpp=Max[P];
-vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
-V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
+	J={};
+	Do[
+		topOutput=topCell[rawJscTop,T,{"V",j/stringNum[[1]]},DeviceQE->topQE,DeviceParameters->topCellParameters,OutputCoupling->calcPRLC];(* from single cell output *)
+		coupling=If[calcPRLC,\[Eta]12*topOutput[[4]],0];
+		AppendTo[J,topOutput[[2]]+botCell[rawJscBot,T,{"V",j/stringNum[[2]]},DeviceQE->botQE,DeviceParameters->botCellParameters,LuminescentCoupling->coupling][[2]]*stringNum[[1]]/stringNum[[2]]]
+	,
+		{j,V}
+	];
+	P=J*V;
+	IV=Join[IV,Transpose[{V,J,P}]];
+	step=step/2;
+	Pmpp=Max[P];
+	vmax=Extract[V,First@Position[P,n_/;n==Pmpp]];
+	V=DeleteCases[{vmax-step,vmax,vmax+step},_?(#>Voc&)];
 ];
 
+Label[end];
 Return[Pmpp]
 ]
 
