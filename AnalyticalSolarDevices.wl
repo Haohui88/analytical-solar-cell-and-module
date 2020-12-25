@@ -36,35 +36,35 @@ SiCell::usage = "Elementary two diode Si cell model. \
 SiCell[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 SiCell[spec, T, probe] calculates the current and voltage at the given probe point."]
 
-Options[SiCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["PERC"],DeviceQE->EQE["PERC"],MetalCoverage->0,SamplePoints->"Default"};
+Options[SiCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["PERC"],DeviceQE->EQE["PERC"],MetalCoverage->0,SamplePoints->"Default",Bifaciality->0.7};
 
 If[ Not@ValueQ[GaAsCell::usage],
 GaAsCell::usage = "Elementary two diode GaAs cell model. \
 GaAsCell[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 GaAsCell[spec, T, probe] calculates the current and voltage at the given probe point."]
 
-Options[GaAsCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["Alta"],DeviceQE->EQE["Alta"],MetalCoverage->0,OutputCoupling->False};
+Options[GaAsCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["Alta"],DeviceQE->EQE["Alta"],MetalCoverage->0,OutputCoupling->False,Bifaciality->0.7};
 
 If[ Not@ValueQ[InGaPCell::usage],
 InGaPCell::usage = "Elementary two diode InGaP cell model. \
 InGaPCell[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 InGaPCell[spec, T, probe] calculates the current and voltage at the given probe point."]
 
-Options[InGaPCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["Sample InGaP"],DeviceQE->IQE["Sample InGaP"],MetalCoverage->0,OutputCoupling->False};
+Options[InGaPCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["Sample InGaP"],DeviceQE->IQE["Sample InGaP"],MetalCoverage->0,OutputCoupling->False,Bifaciality->0.7};
 
 If[ Not@ValueQ[TwoDiodePerovskiteCell::usage],
 TwoDiodePerovskiteCell::usage = "Elementary two diode perovskite cell model. \
 TwoDiodePerovskiteCell[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 TwoDiodePerovskiteCell[spec, T, probe] calculates the current and voltage at the given probe point."]
 
-Options[TwoDiodePerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_Yang2015"],DeviceQE->EQE["perovskite_Yang2015"],MetalCoverage->0,OutputCoupling->False};
+Options[TwoDiodePerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_Yang2015"],DeviceQE->EQE["perovskite_Yang2015"],MetalCoverage->0,OutputCoupling->False,Bifaciality->0.7};
 
 If[ Not@ValueQ[PerovskiteCell::usage],
 PerovskiteCell::usage = "Elementary perovskite cell model based on a physics model. \
 PerovskiteCell[spec, T] calculates the full IV curve under the given spectrum and temperature. \
 PerovskiteCell[spec, T, probe] calculates the current and voltage at the given probe point."]
 
-Options[PerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_nip_Yang2017b"],DeviceQE->EQE["perovskite_Yang2017"],MetalCoverage->0,OutputCoupling->False};
+Options[PerovskiteCell]={LuminescentCoupling->0,DeviceArea->1,DeviceParameters->parameters["perovskite_nip_Yang2017b"],DeviceQE->EQE["perovskite_Yang2017"],MetalCoverage->0,OutputCoupling->False,Bifaciality->0.7};
 
 
 (* ::Section::Closed:: *)
@@ -95,7 +95,7 @@ TwoTer2J[spec, T] calculates the full IV curve under the given spectrum and temp
 TwoTer2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. \
 Default options: {MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE[\"sample GS2T_top\"],EQE[\"sample GS2T_bot\"]},SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.51}"]
 
-Options[TwoTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["sample GS2T_top"],EQE["sample GS2T_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51,RearIllumination->None};
+Options[TwoTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["sample GS2T_top"],EQE["sample GS2T_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51,RearIllumination->None,Bifaciality->0.7};
 
 If[ Not@ValueQ[TwoTer$GaAsSi::usage],
 TwoTer$GaAsSi::usage = "Tandem two-terminal GaAs on Si model. \
@@ -139,7 +139,7 @@ FourTer2J::usage = "Tandem dual junction four-terminal model. \
 FourTer2J[spec, T] calculates the full IV curve under the given spectrum and temperature. Default options: {MaterialSystem\[Rule]{GaAsCell,SiCell},SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]}, \
 SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.51}"]
 
-Options[FourTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51,RearIllumination->None};
+Options[FourTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.51,RearIllumination->None,Bifaciality->0.7};
 
 If[ Not@ValueQ[FourTer$GaAsSi::usage],
 FourTer$GaAsSi::usage = "Tandem four-terminal GaAs on Si model. \
@@ -173,7 +173,7 @@ VMatch2J[spec, T] calculates the full IV curve under the given spectrum and temp
 VMatch2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. Default options: {MaterialSystem\[Rule]{GaAsCell,SiCell},\
 SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]},SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,StringNumber->{10,17}}"]
 
-Options[VMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{10,17},RearIllumination->None};
+Options[VMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{10,17},RearIllumination->None,Bifaciality->0.7};
 
 If[ Not@ValueQ[VMatch$GaAsSi::usage],
 VMatch$GaAsSi::usage = "Tandem (mechanically) voltage matched GaAs on Si model. \
@@ -211,7 +211,7 @@ ThreeTer2J[spec, T] calculates the full IV curve under the given spectrum and te
 ThreeTer2J[spec, T, \"mpp\"] calculates the current and voltage at the MPP point. Default options: {MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"]},\
 SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,StringNumber->{1,2}}"]
 
-Options[ThreeTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{1,2},RearIllumination->None};
+Options[ThreeTer2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,StringNumber->{1,2},RearIllumination->None,Bifaciality->0.7};
 
 If[ Not@ValueQ[ThreeTer$GaAsSi::usage],
 ThreeTer$GaAsSi::usage = "Tandem three-terminal GaAs on Si model. \
@@ -249,7 +249,7 @@ AMatch2J[spec, T] calculates the full IV curve under the given spectrum and temp
 Default options: MaterialSystem->{GaAsCell,SiCell}, {SubQE->{EQE[\"GS_Essig2017_top\"],EQE[\"GS_Essig2017_bot\"],EQE[\"Kaneka_HJ-IBC\"]},\
 SubCells->{parameters[\"Alta\"],parameters[\"Kaneka_HJ-IBC\"]},CouplingEfficiency->0.5,AreaRatio->0.7}"]
 
-Options[AMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"],EQE["Kaneka_HJ-IBC"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,AreaRatio->0.7,RearIllumination->None};
+Options[AMatch2J]={MaterialSystem->{GaAsCell,SiCell},SubQE->{EQE["GS_Essig2017_top"],EQE["GS_Essig2017_bot"],EQE["Kaneka_HJ-IBC"]},SubCells->{parameters["Alta"],parameters["Kaneka_HJ-IBC"]},CouplingEfficiency->0.5,AreaRatio->0.7,RearIllumination->None,Bifaciality->0.7};
 
 If[ Not@ValueQ[AMatch$GaAsSi::usage],
 AMatch$GaAsSi::usage = "Tandem areal matched GaAs on Si model. \
@@ -475,7 +475,7 @@ CalcJsc[spec_,QE_,cellArea_:1.,metalCoverage_:0.]:=Module[{wavelength,wRange,spe
 (*Input spec can simply be the photo-generation current in SI unit. Often it is more convenient to specify photogeneration current instead of worrying about spectrum, since Si cell is usually insensitive to spectral effects. Note that this current should not be temperature corrected (correction will be done internally). *)
 
 
-SiCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,a,Vbr,m,samplePts},
+SiCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,a,Vbr,m,samplePts,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[0]=1.1557*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-7.021*10^-4*q*Tstc^2/(Tstc+1108);
@@ -504,23 +504,23 @@ m=cellParameterList["AvalancheBreakdownExponent"];
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -530,9 +530,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling from the front *)
@@ -585,7 +585,7 @@ Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp};
 ]
 
 
-SiCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,V,J,Jsc=0,t,specInterp,qeInterp,n1,n2,a,Vbr,m,P,current},
+SiCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,wavelength,\[Phi]\[Lambda],Tstc,IV,wRange,voltage,V,J,Jsc=0,t,specInterp,qeInterp,n1,n2,a,Vbr,m,P,current,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[0]=1.1557*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-7.021*10^-4*q*Tstc^2/(Tstc+1108);
@@ -614,23 +614,23 @@ m=cellParameterList["AvalancheBreakdownExponent"];
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -640,9 +640,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -694,7 +694,7 @@ Return@{P,J,V};
 (*Default QE and J0 values represent a state of the art Alta ELO GaAs cell. *)
 
 
-GaAsCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,Jmpp,Vmpp,V,J,P,vmax,step,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
+GaAsCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,Jmpp,Vmpp,V,J,P,vmax,step,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[0]=1.5216*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-8.871*10^-4*q*Tstc^2/(Tstc+572);
@@ -721,23 +721,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -747,9 +747,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -788,7 +788,7 @@ Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp};
 ]
 
 
-GaAsCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current},
+GaAsCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[0]=1.5216*q; (* Ref: Y.P. Varshni, Physica 1967 *)
 Eg[Tstc]=Eg[0]-8.871*10^-4*q*Tstc^2/(Tstc+572);
@@ -815,23 +815,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -841,9 +841,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -885,7 +885,7 @@ Return[{P,J,V}];];
 (*InGaP cell*)
 
 
-InGaPCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
+InGaPCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 (* Ref for T dependence of Eg: Hooft et al., 1992 *)
 Eg[0]=1.937*q; 
@@ -913,23 +913,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -939,9 +939,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -980,7 +980,7 @@ Label[end];
 ]
 
 
-InGaPCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current},
+InGaPCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 (* Ref for T dependence of Eg: Hooft et al., 1992 *)
 Eg[0]=1.937*q; 
@@ -1008,23 +1008,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -1034,9 +1034,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -1130,7 +1130,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Perovskite cell*)
 
 
@@ -1144,7 +1144,7 @@ Pmpp=Jsc*Voc*FF*corr[T-273.15];
 (*Bandgap temperature dependence based on measured blue shift in ref: Foley et al., 2015 and Milot et al., 2015. *)
 
 
-TwoDiodePerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal},
+TwoDiodePerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,current,step,vmax,Jmpp,Vmpp,V,J,P,Jsc=0,Voc,t,FF,Pmpp,n1,n2,\[Eta]$internal,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[Tstc]=1.55*q;
 Eg[T]=Eg[Tstc]+(T-Tstc)*0.00045*q;
@@ -1170,23 +1170,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -1196,9 +1196,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -1237,7 +1237,7 @@ Label[end];
 ]
 
 
-TwoDiodePerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current},
+TwoDiodePerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{Eg,cellArea,cellParameterList,QE,QEfront,QErear,J01,J02,Rs,Rsh,jscTc,Tstc,IV,voltage,V,J,Jsc=0,t,n1,n2,\[Eta]$internal,P,current,bifaciality=OptionValue@Bifaciality},
 Tstc=273.15+25;
 Eg[Tstc]=1.55*q;
 Eg[T]=Eg[Tstc]+(T-Tstc)*0.00045*q;
@@ -1263,23 +1263,23 @@ n2=2; (* ideality factor 2 *)
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -1289,9 +1289,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling]*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -1342,7 +1342,7 @@ Return[{P,J,V}];];
 (*internal photon recycling and output coupling model not verified. *)
 
 
-PerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,QEfront,QErear,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc=0,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF},
+PerovskiteCell[spec_,T_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,QEfront,QErear,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc=0,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF,bifaciality=OptionValue@Bifaciality},
 
 (* main model specific definitions *)
 Tstc=273.15+25;
@@ -1377,23 +1377,23 @@ sJb0=cellParameterList["Jb0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -1403,9 +1403,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -1449,7 +1449,7 @@ Label[end];
 ];
 
 
-PerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,QEfront,QErear,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc=0,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF},
+PerovskiteCell[spec_,T_,probe_,opt:OptionsPattern[]]:=Module[{cellArea,cellParameterList,Eg,QE,QEfront,QErear,jscTc,\[Lambda]ave,diffusionCoeff,t0,\[Beta]f,\[Beta]b,sVbi,v$prime,v,m,\[Alpha]f,\[Alpha]b,A,B,sJf0,sJb0,Tstc,IV,voltage,current,step,V,J,P,vmax,Jsc=0,Jsc2,Voc,t,Jmpp,Vmpp,Pmpp,FF,bifaciality=OptionValue@Bifaciality},
 
 (* main model specific definitions *)
 Tstc=273.15+25;
@@ -1483,23 +1483,23 @@ sJb0=cellParameterList["Jb0"]*Exp[-Eg[T]/(k*T)+Eg[298.15]/(k*298.15)]*cellArea;
 Switch[spec,
 	_?NumericQ, (* directly specifying the current *)
 		Jsc=spec;,
-	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current *)
+	{_?NumericQ,_?NumericQ}, (* bifacial: directly specifying the front and back current, when specifying back current, bifaciality is not used *)
 		Jsc=Plus@@spec,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
 		Jsc=First@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];,
 	{{_?NumericQ},{_?NumericQ}}, (* bifacial: directly specifying the front and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=spec[[1,1]]/1000*CalcJsc[specAM15G,QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=Total@Flatten@spec/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=(spec[[1,1]]+spec[[2,1]]*bifaciality)/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
 		];,
 	_List?(ArrayQ@#&&ArrayDepth@#==2&), (* specify spectral irradiance *)
 		Jsc=CalcJsc[spec,QE,cellArea,OptionValue@MetalCoverage];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_List?(ArrayQ@#&&ArrayDepth@#==2&)}, (* bifacial: specifying the front and back spectral irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+CalcJsc[spec[[2]],QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),_?NumericQ}, (* bifacial: specifying the front spectral irradiance and back current *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
@@ -1509,9 +1509,9 @@ Switch[spec,
 		];,
 	{_List?(ArrayQ@#&&ArrayDepth@#==2&),{_?NumericQ}}, (* bifacial: specifying the front spectral irradiance and back irradiance *)
 		If[MatchQ[QE,{_List?(ArrayDepth@#==2&),_List?(ArrayDepth@#==2&)}],
-			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QEfront,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QErear,cellArea,OptionValue@MetalCoverage]*bifaciality;
 			,
-			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage];
+			Jsc=CalcJsc[spec[[1]],QE,cellArea,OptionValue@MetalCoverage]+spec[[2,1]]/1000*CalcJsc[specAM15G,QE,cellArea,OptionValue@MetalCoverage]*bifaciality;
 		];
 ];
 Jsc=(Jsc+jscTc*(T-Tstc)*Jsc+OptionValue[LuminescentCoupling])*cellArea*(1-OptionValue@MetalCoverage); (* correct for elevated temperature and luminescent coupling *)
@@ -1588,7 +1588,7 @@ Return[{modIV,Isc,Voc,FF}~Join~RotateRight@mpp~Join~{\[Eta]cell,\[Eta]mod}]
 ];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*2T current matched tandem modules*)
 
 
@@ -1600,7 +1600,7 @@ Return[{modIV,Isc,Voc,FF}~Join~RotateRight@mpp~Join~{\[Eta]cell,\[Eta]mod}]
 (*General dual junction 2T tandem model, does not include InGaP/GaAs/Si. *)
 
 
-TwoTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step,rearSpec},
+TwoTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step,rearSpec,bifaciality=OptionValue@Bifaciality},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topCell=OptionValue[MaterialSystem][[1]];
 botCell=OptionValue[MaterialSystem][[2]];
@@ -1624,9 +1624,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 JscTop=topCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
@@ -1685,7 +1685,7 @@ FF=Pmpp/(Jsc*Voc);
 
 
 
-TwoTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step,rearSpec},
+TwoTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,topCellParameters,botCellParameters,coupling,topOutput,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,J,V,P,JscTop,JscBot,rawJscTop,rawJscBot,jmax,step,rearSpec,bifaciality=OptionValue@Bifaciality},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topCell=OptionValue[MaterialSystem][[1]];
 botCell=OptionValue[MaterialSystem][[2]];
@@ -1709,9 +1709,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 JscTop=topCell[rawJscTop,T,{"V",0},DeviceParameters->topCellParameters][[2]];
@@ -2333,7 +2333,7 @@ Return[Pmpp]
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*4T tandem modules*)
 
 
@@ -2345,7 +2345,7 @@ Return[Pmpp]
 (*Dual junction 4T tandem. *)
 
 
-FourTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,rearSpec},
+FourTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,rearSpec,bifaciality=OptionValue@Bifaciality},
 \[Eta]12=OptionValue[CouplingEfficiency];
 topCell=OptionValue[MaterialSystem][[1]];
 botCell=OptionValue[MaterialSystem][[2]];
@@ -2369,9 +2369,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 {IV[1],Jsc[1],Voc[1],FF[1],Pmpp[1],Jmpp[1],Vmpp[1]}=topCell[rawJscTop,T,DeviceQE->topQE,DeviceParameters->topCellParameters];
@@ -2507,7 +2507,7 @@ Pmpp["total"]=Pmpp[1]+Pmpp[2];
 (*General 2J-VMatch*)
 
 
-VMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,rearSpec},
+VMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,rearSpec,bifaciality=OptionValue@Bifaciality},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2535,9 +2535,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
@@ -2612,7 +2612,7 @@ Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot};
 ]
 
 
-VMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,rearSpec},
+VMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,topCell,botCell,stringNum,topQE,botQE,botQErear,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,rearSpec,bifaciality=OptionValue@Bifaciality},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -2640,9 +2640,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceArea->1/stringNum[[1]],DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
@@ -3173,7 +3173,7 @@ Return[Pmpp]
 (*General 2J-3T*)
 
 
-ThreeTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,botQErear,rearSpec,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,botQErear,rearSpec,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,bifaciality=OptionValue@Bifaciality},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -3202,9 +3202,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
@@ -3279,7 +3279,7 @@ Return@{IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,sVocTop,sVocBot};
 ]
 
 
-ThreeTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,botQErear,rearSpec,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc},
+ThreeTer2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,stringNum,topCell,botCell,topQE,botQE,botQErear,rearSpec,rawJscTop,rawJscBot,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,J,V,P,sVocTop,sVocBot,a,b,jDiff,x2,n,vmax,step,maxJsc,bifaciality=OptionValue@Bifaciality},
 
 (* tandem specific physical parameters *)
 \[Eta]12=OptionValue[CouplingEfficiency];
@@ -3308,9 +3308,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 sVocTop=topCell[rawJscTop,T,{"J",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[3]]*stringNum[[1]];
@@ -3825,7 +3825,7 @@ Return[Pmpp]
 (*General dual junction model for areal matched tandem with top cell current LARGER than bottom cell current when area is the same (does not work for InGaP/Si, as top cell current is larger than Si, does not make sense for Si to be smaller than top cells). *)
 
 
-AMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,rearSpec,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
+AMatch2J[spec_,T_,opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,rearSpec,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax,bifaciality=OptionValue@Bifaciality},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -3856,9 +3856,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 JscTop=topCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
@@ -3904,7 +3904,7 @@ FF=Pmpp/(Jsc*Voc);
 ]
 
 
-AMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,rearSpec,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax},
+AMatch2J[spec_,T_,"mpp",opt:OptionsPattern[]]:=Module[{\[Eta]12,calcPRLC=False,DeviceArea$Ratio,topCell,botCell,topQE,botQE,botQErear,rawJscTop,rawJscBot,rearSpec,topCellParameters,botCellParameters,IV,Jsc,Voc,FF,Pmpp,Jmpp,Vmpp,coupling,topOutput,step,J,V,P,JscTop,JscBot,jmax,bifaciality=OptionValue@Bifaciality},
 \[Eta]12=OptionValue[CouplingEfficiency];
 If[\[Eta]12>0,calcPRLC=True];
 DeviceArea$Ratio=OptionValue[AreaRatio];
@@ -3935,9 +3935,9 @@ Switch[rearSpec,
 	_?NumericQ, (* directly specifying the current *)
 		rawJscBot+=rearSpec;,
 	{_?NumericQ}, (* directly specifying the irradiance level *)
-		rawJscBot+=First@rearSpec/1000*CalcJsc[specAM15G,botQErear];,
+		rawJscBot+=First@rearSpec*bifaciality/1000*CalcJsc[specAM15G,botQErear];,
 	{__List},
-		rawJscBot+=CalcJsc[rearSpec,botQErear];
+		rawJscBot+=CalcJsc[rearSpec,botQErear]*bifaciality;
 ];
 
 JscTop=topCell[rawJscTop,T,{"V",0},DeviceQE->topQE,DeviceParameters->topCellParameters][[2]];
